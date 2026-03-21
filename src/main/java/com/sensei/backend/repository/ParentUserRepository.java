@@ -17,7 +17,7 @@
 
 // }
 package com.sensei.backend.repository;
-
+import java.util.List;
 import com.sensei.backend.entity.ParentUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +31,6 @@ public interface ParentUserRepository extends JpaRepository<ParentUser, UUID> {
     Optional<ParentUser> findByUserName(String userName);
     @Query("SELECT p FROM ParentUser p LEFT JOIN FETCH p.childUsers WHERE p.phone = :phone")
 Optional<ParentUser> findByPhoneNumberWithChildUsers(@Param("phone") String phone);
+
+List<ParentUser> findByLocation(String location);
 }

@@ -33,5 +33,7 @@ public interface ChildUserRepository extends JpaRepository<ChildUser, UUID> {
 
     List<ChildUser> findByParentUserParentId(UUID parentId);
 
+    List<ChildUser> findBySchoolName(String schoolName);
+
 }
 

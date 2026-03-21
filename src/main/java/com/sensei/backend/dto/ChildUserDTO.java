@@ -48,7 +48,7 @@
 //     private Date planExpiryDate;
 // }
 package com.sensei.backend.dto;
-
+import javax.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -57,17 +57,26 @@ import java.util.UUID;
 
 @Data
 public class ChildUserDTO {
-
+    
     private UUID childId;
+
+    @NotBlank(message = "Child name is required")
     private String childName;
+
     private String gender;
+    
+    @NotBlank(message = "Grade is required")
     private String grade;
     private String ageGroup;
     private String bloodGroup;
+
     private String phoneNumber;
     private Date dateOfBirth;
-
+    private String schoolName;// added new school 
+    
+    @NotNull(message = "Parent ID is required")
     private UUID parentId;
+
     private UUID activePlanId;
     private LocalDate planStartDate;
 }

@@ -1,8 +1,11 @@
 package com.sensei.backend.controller;
 
+import com.sensei.backend.dto.ChildUserDTO;
 import com.sensei.backend.dto.progress.*;
 import com.sensei.backend.service.ChildProgressService;
 import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,4 +36,81 @@ public class ChildProgressController {
         childProgressService.recordQuestionAttempt(dto);
         return ResponseEntity.ok("Answer recorded");
     }
+
+    // START DIGITAL ACTIVITY
+    @PostMapping("/digital/start")
+    public ResponseEntity<String> startDigital(@RequestBody StartDigitalActivityDTO dto) {
+        childProgressService.startDigitalActivity(dto);
+            return ResponseEntity.ok("Digital activity started");
+}
+
+// COMPLETE DIGITAL ACTIVITY
+    @PostMapping("/digital/complete")
+    public ResponseEntity<String> completeDigital(@RequestBody CompleteDigitalActivityDTO dto) {
+        childProgressService.completeDigitalActivity(dto);
+        return ResponseEntity.ok("Digital activity completed");
+    }
+
+    @GetMapping("/child/{childId}/summary")
+public ResponseEntity<ChildProgressSummaryDTO> getSummary(
+        @PathVariable UUID childId) {
+
+    return ResponseEntity.ok(
+            childProgressService.getChildProgressSummary(childId)
+    );
+}
+@GetMapping("/child/{childId}/submodules")
+public ResponseEntity<List<SubModuleProgressDTO>> getSubModules(
+        @PathVariable UUID childId) {
+
+    return ResponseEntity.ok(
+            childProgressService.getSubModuleProgress(childId)
+    );
+}
+
+@GetMapping("/child/{childId}/activities")
+public ResponseEntity<List<ActivityProgressDTO>> getActivities(
+        @PathVariable UUID childId) {
+
+    return ResponseEntity.ok(
+            childProgressService.getActivityProgress(childId)
+    );
+}
+@GetMapping("/child/{childId}/digitals")
+public ResponseEntity<List<DigitalProgressDTO>> getDigitals(
+        @PathVariable UUID childId) {
+
+    return ResponseEntity.ok(
+            childProgressService.getDigitalProgress(childId)
+    );
+}
+
+@GetMapping("/school")
+public ResponseEntity<SchoolProgressDTO> getSchoolProgress(
+        @RequestParam String schoolName) {
+
+    return ResponseEntity.ok(
+            childProgressService.getSchoolProgress(schoolName)
+    );
+}
+
+@GetMapping("/children")
+public ResponseEntity<List<ChildUserDTO>> getChildren(
+        @RequestParam(required = false) String school,
+        @RequestParam(required = false) String location) {
+
+    return ResponseEntity.ok(
+            childProgressService.getChildrenByFilter(school, location)
+    );
+}
+
+@GetMapping("/location")
+public ResponseEntity<SchoolProgressDTO> getLocationProgress(
+        @RequestParam String location) {
+
+    return ResponseEntity.ok(
+            childProgressService.getLocationProgress(location)
+    );
+}
+
 }

@@ -68,6 +68,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/children")
 @RequiredArgsConstructor
@@ -76,7 +78,7 @@ public class ChildUserController {
     private final ChildUserService childUserService;
 
     @PostMapping
-    public ResponseEntity<ChildUserDTO> create(@RequestBody ChildUserDTO dto) {
+    public ResponseEntity<ChildUserDTO> create(@Valid @RequestBody ChildUserDTO dto) {
         return ResponseEntity.ok(childUserService.createChildUser(dto));
     }
 
@@ -87,7 +89,7 @@ public class ChildUserController {
 
     @PutMapping("/{childId}")
     public ResponseEntity<ChildUserDTO> update(@PathVariable UUID childId,
-                                               @RequestBody ChildUserDTO dto) {
+                                               @Valid @RequestBody ChildUserDTO dto) {
         return ResponseEntity.ok(childUserService.update(childId, dto));
     }
 

@@ -13,4 +13,5 @@ public interface DigitalActivityRepository extends JpaRepository<DigitalActivity
 
     // For enforcement rules
     long countBySubModule_Id(UUID subModuleId);
+
 }

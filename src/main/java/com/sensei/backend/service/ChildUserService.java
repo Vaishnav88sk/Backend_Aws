@@ -151,6 +151,7 @@ public class ChildUserService {
         child.setBloodGroup(dto.getBloodGroup());
         child.setPhoneNumber(dto.getPhoneNumber());
         child.setDateOfBirth(dto.getDateOfBirth());
+        child.setSchoolName(dto.getSchoolName());
 
         ParentUser parent = parentUserRepository.findById(dto.getParentId())
                 .orElseThrow(() -> new RuntimeException("Parent not found"));

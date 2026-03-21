@@ -34,7 +34,7 @@ public class PricingPlan {
     /**
      * Duration of plan in months
      */
-    @Column(name = "duration_in_months", nullable = false)
+    @Column(name = "duration_in_months")
     private Integer durationMonths;
 
     private String grade;

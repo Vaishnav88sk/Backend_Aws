@@ -204,7 +204,8 @@ public class ParentUserService {
         parent.setMaritalStatus(dto.getMaritalStatus());
         parent.setOccupation(dto.getOccupation());
         parent.setRelationWithChildren(dto.getRelationWithChildren());
-
+         // ✅ NEW
+        parent.setLocation(dto.getLocation());
         parent.setSpouseName(dto.getSpouseName());
         parent.setSpouseGender(dto.getSpouseGender());
         parent.setSpouseEmail(dto.getSpouseEmail());

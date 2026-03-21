@@ -132,7 +132,7 @@ public class ParentUserController {
     }
 
     @PutMapping("/{parentId}")
-    public ResponseEntity<ParentUserDTO> update(@PathVariable UUID parentId, @RequestBody ParentUserDTO dto) {
+    public ResponseEntity<ParentUserDTO> update(@PathVariable UUID parentId,@Valid @RequestBody ParentUserDTO dto) {
         return ResponseEntity.ok(parentUserService.updateParentUser(parentId, dto));
     }
 

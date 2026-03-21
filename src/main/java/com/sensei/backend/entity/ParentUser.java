@@ -127,5 +127,9 @@ public class ParentUser {
     // 🔗 FIXED mappedBy
     @OneToMany(mappedBy = "parentUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildUser> childUsers = new ArrayList<>();
+
+    // ✅ NEW FIELD
+    @Column(name = "location")
+    private String location;
 }
 

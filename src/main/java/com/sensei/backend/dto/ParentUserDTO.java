@@ -56,16 +56,26 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.constraints.*;
 
 @Data
 public class ParentUserDTO {
 
     private UUID parentId;   // was String
 
+    @NotBlank(message = "Name is required")
     private String name;
+
     private String userName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
+
+    @NotBlank(message = "Phone is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone must be 10 digits")
     private String phone;
+
     private String password;
     private String maritalStatus;
     private String occupation;
@@ -80,4 +90,8 @@ public class ParentUserDTO {
     private String spouseRelationWithChild;
 
     private List<ChildUserDTO> childUsers;
+
+    // ✅ NEW FIELD
+    @NotBlank(message = "Location is required")
+    private String location;
 }

@@ -118,6 +118,10 @@ public class ChildUser {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
+    // ✅ NEW FIELD
+    @Column(name = "school_id")
+    private String schoolName;
+    
     // 🔗 Parent
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", nullable = false)
