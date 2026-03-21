@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.Collections;
+
 @Component
 @RequiredArgsConstructor
 public class JwtFilter implements Filter {
@@ -23,7 +27,7 @@ public class JwtFilter implements Filter {
 
         String path = req.getRequestURI();
 
-        // ✅ Allow auth endpoints without token
+        // ✅ Allow auth endpoints
         if (path.startsWith("/api/auth")) {
             chain.doFilter(request, response);
             return;
@@ -31,7 +35,6 @@ public class JwtFilter implements Filter {
 
         String header = req.getHeader("Authorization");
 
-        // ❌ Block if no token
         if (header == null || !header.startsWith("Bearer ")) {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             res.getWriter().write("Missing or invalid Authorization header");
@@ -40,14 +43,25 @@ public class JwtFilter implements Filter {
 
         String token = header.substring(7);
 
-        // ❌ Block invalid token
         if (!jwtUtil.validateToken(token)) {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             res.getWriter().write("Invalid or expired token");
             return;
         }
 
-        // ✅ Token valid → continue
+        // 🔥 THIS IS THE MISSING PART
+        String email = jwtUtil.extractEmail(token);
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        email,
+                        null,
+                        Collections.emptyList()
+                );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // ✅ Continue
         chain.doFilter(request, response);
     }
 }

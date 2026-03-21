@@ -1,41 +1,48 @@
 package com.sensei.backend.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "sensei-secret-key";
+    @Value("${JWT_SECRET}")
+    private String SECRET;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public String extractEmail(String token) {
-        return getClaims(token).getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            getClaims(token);
+            extractEmail(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
+    public String extractEmail(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
-                .getBody();
+                .getBody()
+                .getSubject();
     }
 }
