@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.Collections;
 
 @Component
@@ -27,7 +28,14 @@ public class JwtFilter implements Filter {
 
         String path = req.getRequestURI();
 
-        // ✅ Allow auth endpoints
+        // ✅ 1. Allow preflight (CORS fix - VERY IMPORTANT)
+        if (req.getMethod().equalsIgnoreCase("OPTIONS")) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // ✅ 2. Allow auth endpoints
         if (path.startsWith("/api/auth")) {
             chain.doFilter(request, response);
             return;
@@ -35,21 +43,21 @@ public class JwtFilter implements Filter {
 
         String header = req.getHeader("Authorization");
 
+        // ✅ 3. If no token → DON'T block (important for public APIs)
         if (header == null || !header.startsWith("Bearer ")) {
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            res.getWriter().write("Missing or invalid Authorization header");
+            chain.doFilter(request, response);
             return;
         }
 
         String token = header.substring(7);
 
+        // ✅ 4. If token invalid → DON'T block (let security handle)
         if (!jwtUtil.validateToken(token)) {
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            res.getWriter().write("Invalid or expired token");
+            chain.doFilter(request, response);
             return;
         }
 
-        // 🔥 THIS IS THE MISSING PART
+        // ✅ 5. Extract user info
         String email = jwtUtil.extractEmail(token);
 
         UsernamePasswordAuthenticationToken authentication =
@@ -61,7 +69,7 @@ public class JwtFilter implements Filter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // ✅ Continue
+        // ✅ 6. Continue request
         chain.doFilter(request, response);
     }
 }
