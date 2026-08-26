@@ -16,6 +16,8 @@ class JwtUtilTest {
         jwtUtil = new JwtUtil();
         // Set a dummy secret key for testing (at least 256 bits for HS256)
         ReflectionTestUtils.setField(jwtUtil, "SECRET", "ThisIsAVerySecretKeyForTestingPurposesOnly!");
+        // Set expiration time to 1 hour (3600000 ms) so the token doesn't instantly expire
+        ReflectionTestUtils.setField(jwtUtil, "jwtExpirationMs", 3600000L);
     }
 
     @Test
