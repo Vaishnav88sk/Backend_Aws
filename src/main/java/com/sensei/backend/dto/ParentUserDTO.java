@@ -2,7 +2,7 @@
 
 // import lombok.Data;
 
-// import javax.validation.constraints.NotNull;
+// import jakarta.validation.constraints.NotNull;
 // import java.util.Date;
 // import java.util.List;
 
@@ -56,7 +56,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Data
 public class ParentUserDTO {

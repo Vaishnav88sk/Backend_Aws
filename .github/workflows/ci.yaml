@@ -31,6 +31,16 @@ jobs:
       - name: Run Code Quality Tools (PMD, SpotBugs)
         run: mvn -B clean compile pmd:check com.github.spotbugs:spotbugs-maven-plugin:check -Dpmd.failOnViolation=false -Dspotbugs.failOnError=false
 
+      - name: Enforce No-Emoji Policy in Source Code
+        run: |
+          echo "Scanning for emojis in src/ directory..."
+          if LC_ALL=C grep -rP "[\x{1F300}-\x{1F64F}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1FA70}-\x{1FAFF}]" src/; then
+            echo "::error::Emojis detected in source code! Please remove them to comply with enterprise code quality standards."
+            exit 1
+          else
+            echo "Success: No emojis found in source code."
+          fi
+
   security-scan:
     if: github.repository == 'SAARKSensei/Backend_Aws'
     name: Security Scan (CodeQL)

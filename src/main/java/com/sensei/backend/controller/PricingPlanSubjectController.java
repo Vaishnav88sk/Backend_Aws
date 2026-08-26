@@ -12,7 +12,7 @@ import java.util.List;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/pricing-plan-subjects")

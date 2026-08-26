@@ -9,11 +9,17 @@ import java.security.Key;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 
+/**
+ * @author vaishnav88sk
+ */
 @Component
 public class JwtUtil {
 
     @Value("${JWT_SECRET}")
     private String SECRET;
+
+    @Value("${JWT_EXPIRATION_MS:86400000}")
+    private long jwtExpirationMs;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -23,7 +29,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

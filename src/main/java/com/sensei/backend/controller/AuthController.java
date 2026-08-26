@@ -6,11 +6,15 @@ import com.sensei.backend.entity.ParentUser;
 import com.sensei.backend.repository.ParentUserRepository;
 import com.sensei.backend.service.GoogleAuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * @author vaishnav88sk
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -20,7 +24,7 @@ public class AuthController {
     private final ParentUserRepository parentUserRepository;
     private final JwtUtil jwtUtil;
 
-    // 🔐 GOOGLE LOGIN (UNCHANGED)
+    // GOOGLE LOGIN (UNCHANGED)
     @PostMapping("/google")
     public ResponseEntity<?> googleLogin(@RequestParam String idToken) {
 
@@ -53,15 +57,18 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    // 🔥 TEMP ADMIN LOGIN FOR POSTMAN (NEW)
-   @PostMapping("/test-login")
-public ResponseEntity<?> testLogin(@RequestParam String email) {
+    @Value("${TEST_ADMIN_EMAIL:admin.sensei.org.in@gmail.com}")
+    private String testAdminEmail;
 
-    if (!email.equals("admin.sensei.org.in@gmail.com")) {
-        return ResponseEntity.status(403).body("Not allowed");
-    }
+    // TEMP ADMIN LOGIN FOR POSTMAN (NEW)
+    @PostMapping("/test-login")
+    public ResponseEntity<?> testLogin(@RequestParam String email) {
 
-    String token = jwtUtil.generateToken(email);
+        if (!email.equals(testAdminEmail)) {
+            return ResponseEntity.status(403).body("Not allowed");
+        }
+
+        String token = jwtUtil.generateToken(email);
     return ResponseEntity.ok(token);
 }
 }

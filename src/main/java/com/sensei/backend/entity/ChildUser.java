@@ -7,7 +7,7 @@
 // import lombok.NoArgsConstructor;
 // import org.hibernate.annotations.GenericGenerator;
 
-// import javax.persistence.*;
+// import jakarta.persistence.*;
 // import java.util.Date;
 
 // @Entity
@@ -72,7 +72,7 @@
 package com.sensei.backend.entity;
 
 import lombok.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Date;
