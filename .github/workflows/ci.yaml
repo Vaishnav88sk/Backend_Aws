@@ -103,7 +103,6 @@ jobs:
 
       - name: Run Tests & Package
         env:
-          JWT_SECRET: dummy_secret_for_ci_tests_only
           LOCAL_DB_URL: jdbc:mysql://127.0.0.1:3306/sensei_db
           LOCAL_DB_USERNAME: root
           LOCAL_DB_PASSWORD: root
