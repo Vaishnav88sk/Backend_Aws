@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+      - test
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/sensei-springboot-backend
