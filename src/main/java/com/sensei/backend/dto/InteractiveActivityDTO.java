@@ -2,8 +2,8 @@ package com.sensei.backend.dto;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data

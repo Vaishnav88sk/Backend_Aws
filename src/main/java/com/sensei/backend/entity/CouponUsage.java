@@ -1,45 +1,39 @@
 package com.sensei.backend.entity;
 
-import javax.persistence.*;
-
-import org.hibernate.annotations.GenericGenerator;
-
+import lombok.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
+@Table(name = "coupon_usage",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"coupon_id", "parent_id"}))
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CouponUsage {
 
-	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
-	@Column(length = 36, updatable = false, nullable = false)
-	private String id;
-
-
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @Id
+    @GeneratedValue
+    private UUID id;
 
     @Column(name = "coupon_id", nullable = false)
-    private String couponId;
+    private UUID couponId;
 
-    @Column(name = "used_at", nullable = false)
+    @Column(name = "parent_id", nullable = false)
+    private UUID parentId;
+
+    @Column(name = "pricing_plan_id", nullable = false)
+    private UUID pricingPlanId;
+
+    @Column(name = "master_transaction_id")
+    private UUID masterTransactionId;
+
+    @Column(name = "discount_amount", nullable = false)
+    private Integer discountAmount;
+
+    @Column(name = "used_at")
     private LocalDateTime usedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.usedAt = LocalDateTime.now();
-    }
-
-    // Getters & Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-
-    public String getCouponId() { return couponId; }
-    public void setCouponId(String couponId) { this.couponId = couponId; }
-
-    public LocalDateTime getUsedAt() { return usedAt; }
-    public void setUsedAt(LocalDateTime usedAt) { this.usedAt = usedAt; }
 }

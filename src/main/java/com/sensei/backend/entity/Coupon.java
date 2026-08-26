@@ -1,75 +1,53 @@
 package com.sensei.backend.entity;
 
-import javax.persistence.*;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import java.math.BigDecimal;
+import lombok.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "coupon") // ✅ matches your DB table name
+@Table(name = "coupon")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Coupon {
 
-	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
-	@Column(length = 36, updatable = false, nullable = false)
-	private String id;
+    @Id
+    @GeneratedValue
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String code;
 
-    @Column(name = "discount_amount", nullable = false, precision = 10, scale = 2)
-    private BigDecimal discountAmount;
+    @Column(name = "discount_type", nullable = false)
+    private String discountType; // FLAT / PERCENT
 
-    @Column(name = "is_percentage", nullable = false)
-    private boolean percentage;
+    @Column(name = "discount_value", nullable = false)
+    private Integer discountValue;
 
-    @Column(name = "expiration_date")
-    private LocalDateTime expirationDate;
+    @Column(name = "max_discount")
+    private Integer maxDiscount;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "min_order_amount")
+    private Integer minOrderAmount;
+
+    @Column(name = "applicable_pricing_plan_id")
+    private UUID applicablePricingPlanId;
+
+    @Column(name = "max_usage")
+    private Integer maxUsage;
+
+    @Column(name = "used_count")
+    private Integer usedCount;
+
+    @Column(name = "expiry_date")
+    private LocalDateTime expiryDate;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    private boolean active = true; // 👈 Add this line if missing
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;  // 
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    // Getters & Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
-
-    public BigDecimal getDiscountAmount() { return discountAmount; }
-    public void setDiscountAmount(BigDecimal discountAmount) { this.discountAmount = discountAmount; }
-
-    public boolean isPercentage() { return percentage; }
-    public void setPercentage(boolean percentage) { this.percentage = percentage; }
-
-    public LocalDateTime getExpirationDate() { return expirationDate; }
-    public void setExpirationDate(LocalDateTime expirationDate) { this.expirationDate = expirationDate; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime CreatedAt) { this.createdAt = createdAt; }
-
-    public User getUser() { return user; }  
-    public void setUser(User user) { this.user = user; } 
-    
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }
