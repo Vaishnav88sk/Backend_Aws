@@ -7,8 +7,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 
 // @RestController
@@ -76,6 +75,7 @@
 
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.digitalactivity.*;
 import com.sensei.backend.service.AccessControlService;
@@ -95,14 +95,14 @@ public class DigitalActivityController {
     private final AccessControlService accessControlService;
 
     @PostMapping
-    public DigitalActivityResponseDTO create(@RequestBody DigitalActivityRequestDTO dto) {
+    public DigitalActivityResponseDTO create(@Valid @RequestBody DigitalActivityRequestDTO dto) {
         return service.create(dto);
     }
 
     @PutMapping("/{id}")
     public DigitalActivityResponseDTO update(
             @PathVariable UUID id,
-            @RequestBody DigitalActivityRequestDTO dto) {
+            @Valid @RequestBody DigitalActivityRequestDTO dto) {
         return service.update(id, dto);
     }
 

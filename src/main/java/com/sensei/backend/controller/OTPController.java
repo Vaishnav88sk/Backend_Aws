@@ -1,5 +1,7 @@
 /*
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.otpless.authsdk.OTPResponse;
 import com.otpless.authsdk.OTPVerificationResponse;
@@ -23,7 +25,7 @@ public class OTPController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOTP(@RequestBody OTPRequestDTO otpRequest) {
+    public ResponseEntity<String> sendOTP(@Valid @RequestBody OTPRequestDTO otpRequest) {
         try {
             OTPResponse otpResponse = otplessService.sendOTP(
                     otpRequest.getDtCode(),
@@ -46,7 +48,7 @@ public class OTPController {
     }
 
 //    @PostMapping("/resend")
-//    public ResponseEntity<String> resendOTP(@RequestBody String dtCode) {
+//    public ResponseEntity<String> resendOTP(@Valid @RequestBody String dtCode) {
 //        try {
 //            OTPResponse otpResponse = otplessService.resendOTP(dtCode);
 //            if (otpResponse.isSuccess()) {
@@ -60,7 +62,7 @@ public class OTPController {
 //    }
 
     @PostMapping("/resend")
-    public ResponseEntity<String> resendOTP(@RequestBody ResendOTPRequest resendOTPRequest) {
+    public ResponseEntity<String> resendOTP(@Valid @RequestBody ResendOTPRequest resendOTPRequest) {
         try {
             OTPResponse otpResponse = otplessService.resendOTP(resendOTPRequest.getDtCode());
             if (otpResponse.isSuccess()) {
@@ -74,7 +76,7 @@ public class OTPController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOTP(@RequestBody OTPVerificationDTO otpVerificationRequest) {
+    public ResponseEntity<String> verifyOTP(@Valid @RequestBody OTPVerificationDTO otpVerificationRequest) {
         try {
             OTPVerificationResponse otpVerificationResponse = otplessService.verifyOTP(
                     otpVerificationRequest.getDtCode(),

@@ -1,5 +1,6 @@
 // package com.sensei.backend.controller;
 
+
 // import com.sensei.backend.entity.Questiontable;
 // import com.sensei.backend.entity.LifeSkill;
 // import com.sensei.backend.dto.QuizResultDTO;
@@ -32,7 +33,7 @@
 
 //     // ✅ Create new Question (with auto LifeSkill linking)
 //     @PostMapping("/question")
-//     public ResponseEntity<?> createQuestion(@RequestBody Questiontable question) {
+//     public ResponseEntity<?> createQuestion(@Valid @RequestBody Questiontable question) {
 //         try {
 //             // ✅ Handle Question-level LifeSkill
 //             if (question.getLifeSkill() != null && question.getLifeSkill().getLifeskillName() != null) {
@@ -80,7 +81,7 @@
 //     }
 
 //     @PostMapping("/submit")
-//     public Map<String, Object> submitQuiz(@RequestBody QuizResultDTO quizResultDTO) {
+//     public Map<String, Object> submitQuiz(@Valid @RequestBody QuizResultDTO quizResultDTO) {
 //         return quizResultService.saveQuizResultAndGetSummary(quizResultDTO);
 //     }
 

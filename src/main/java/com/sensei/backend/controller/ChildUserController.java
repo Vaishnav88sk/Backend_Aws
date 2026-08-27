@@ -1,4 +1,5 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.ChildUserDTO;
 import com.sensei.backend.service.ChildUserService;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/children")
@@ -46,8 +46,8 @@ public class ChildUserController {
     }
 
     @GetMapping
-public ResponseEntity<List<ChildUserDTO>> getAllChildren() {
-    return ResponseEntity.ok(childUserService.getAllChildren());
+public ResponseEntity<org.springframework.data.domain.Page<ChildUserDTO>> getAllChildren(org.springframework.data.domain.Pageable pageable) {
+    return ResponseEntity.ok(childUserService.getAllChildren(pageable));
 }
 
 @GetMapping("/parent/{parentId}")

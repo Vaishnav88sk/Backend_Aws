@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 import com.sensei.backend.service.CouponService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +26,7 @@ public class CouponController {
     // -------------------------------
     @PostMapping("/api/admin/coupons")
     public ResponseEntity<String> createCoupon(
-            @RequestBody CreateCouponRequestDTO dto
+            @Valid @RequestBody CreateCouponRequestDTO dto
     ) {
         couponService.createCoupon(dto);
         return ResponseEntity.ok("Coupon created successfully");
@@ -35,7 +37,7 @@ public class CouponController {
     // -------------------------------
     @PostMapping("/api/coupons/validate")
     public ResponseEntity<ValidateCouponResponseDTO> validateCoupon(
-            @RequestBody ValidateCouponRequestDTO dto
+            @Valid @RequestBody ValidateCouponRequestDTO dto
     ) {
         return ResponseEntity.ok(couponService.validateCoupon(dto));
     }
@@ -52,7 +54,7 @@ public ResponseEntity<?> getCoupon(@PathVariable UUID id) {
 
 @PutMapping("/api/admin/coupons")
 public ResponseEntity<String> updateCoupon(
-        @RequestBody UpdateCouponRequestDTO dto
+        @Valid @RequestBody UpdateCouponRequestDTO dto
 ) {
     couponService.updateCoupon(dto);
     return ResponseEntity.ok("Coupon updated successfully");

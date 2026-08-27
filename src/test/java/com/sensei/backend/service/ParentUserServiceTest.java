@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
+import com.sensei.backend.mapper.ParentUserMapper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +33,7 @@ class ParentUserServiceTest {
     private PricingPlanRepository pricingPlanRepository;
 
     @Mock
-    private ModelMapper modelMapper;
+    private ParentUserMapper parentUserMapper;
 
     @InjectMocks
     private ParentUserService parentUserService;
@@ -57,9 +57,9 @@ class ParentUserServiceTest {
 
     @Test
     void testCreateParentUser() {
-        when(modelMapper.map(parentUserDTO, ParentUser.class)).thenReturn(parentUser);
+        when(parentUserMapper.toEntity(parentUserDTO)).thenReturn(parentUser);
         when(parentUserRepository.save(any(ParentUser.class))).thenReturn(parentUser);
-        when(modelMapper.map(parentUser, ParentUserDTO.class)).thenReturn(parentUserDTO);
+        when(parentUserMapper.toDto(parentUser)).thenReturn(parentUserDTO);
 
         ParentUserDTO result = parentUserService.createParentUser(parentUserDTO);
 
@@ -71,7 +71,7 @@ class ParentUserServiceTest {
     @Test
     void testGetParentUserByIdSuccess() {
         when(parentUserRepository.findById(testId)).thenReturn(Optional.of(parentUser));
-        when(modelMapper.map(parentUser, ParentUserDTO.class)).thenReturn(parentUserDTO);
+        when(parentUserMapper.toDto(parentUser)).thenReturn(parentUserDTO);
 
         ParentUserDTO result = parentUserService.getParentUserById(testId);
 

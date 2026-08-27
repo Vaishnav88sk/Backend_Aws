@@ -7,8 +7,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 
 // @RestController
@@ -49,6 +48,7 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.submodule.SubModuleRequestDTO;
 import com.sensei.backend.dto.submodule.SubModuleResponseDTO;
@@ -70,7 +70,7 @@ public class SubModuleController {
     private final AccessControlService accessControlService;
 
     @PostMapping
-    public ResponseEntity<SubModuleResponseDTO> create(@RequestBody SubModuleRequestDTO dto) {
+    public ResponseEntity<SubModuleResponseDTO> create(@Valid @RequestBody SubModuleRequestDTO dto) {
         return ResponseEntity.ok(subModuleService.create(dto));
     }
 
@@ -100,7 +100,7 @@ public class SubModuleController {
     @PutMapping("/{id}")
     public ResponseEntity<SubModuleResponseDTO> update(
             @PathVariable UUID id,
-            @RequestBody SubModuleRequestDTO dto) {
+            @Valid @RequestBody SubModuleRequestDTO dto) {
 
         return ResponseEntity.ok(subModuleService.update(id, dto));
     }

@@ -7,8 +7,7 @@
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 
 // @RestController
@@ -91,6 +90,7 @@
 // }
 
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.question.QuestionRequestDTO;
 import com.sensei.backend.dto.question.QuestionResponseDTO;
@@ -111,14 +111,14 @@ public class QuestionController {
     private final AccessControlService accessControlService;
 
     @PostMapping
-    public QuestionResponseDTO create(@RequestBody QuestionRequestDTO dto) {
+    public QuestionResponseDTO create(@Valid @RequestBody QuestionRequestDTO dto) {
         return service.create(dto);
     }
 
     @PutMapping("/{id}")
     public QuestionResponseDTO update(
             @PathVariable UUID id,
-            @RequestBody QuestionRequestDTO dto) {
+            @Valid @RequestBody QuestionRequestDTO dto) {
         return service.update(id, dto);
     }
 

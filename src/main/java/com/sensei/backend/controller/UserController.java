@@ -1,5 +1,6 @@
 // package com.sensei.backend.controller;
 
+
 // import com.sensei.backend.dto.UserRegistrationRequest;
 // import com.sensei.backend.entity.ReferralCode;
 // import com.sensei.backend.entity.Wallet;
@@ -31,7 +32,7 @@
 //      * Register new user with optional referral code
 //      */
 //     @PostMapping("/register")
-//     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationRequest request) {
+//     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
 //         try {
 //             // TODO: Replace this with your actual user creation logic
 //             // User newUser = userService.createUser(request);

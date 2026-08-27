@@ -11,8 +11,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 // import java.util.Comparator;
 
@@ -89,7 +88,7 @@
 //     private final SubjectService subjectService;
 
 //     @PostMapping
-//     public ResponseEntity<SubjectResponseDTO> createSubject(@RequestBody SubjectRequestDTO dto) {
+//     public ResponseEntity<SubjectResponseDTO> createSubject(@Valid @RequestBody SubjectRequestDTO dto) {
 //         return ResponseEntity.ok(subjectService.createSubject(dto));
 //     }
 
@@ -110,6 +109,7 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.subject.SubjectRequestDTO;
 import com.sensei.backend.dto.subject.SubjectResponseDTO;
@@ -130,7 +130,7 @@ public class SubjectController {
     private final AccessControlService accessControlService;
 
     @PostMapping
-    public SubjectResponseDTO create(@RequestBody SubjectRequestDTO dto) {
+    public SubjectResponseDTO create(@Valid @RequestBody SubjectRequestDTO dto) {
         return subjectService.create(dto);
     }
 
@@ -151,7 +151,7 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
-    public SubjectResponseDTO update(@PathVariable UUID id, @RequestBody SubjectRequestDTO dto) {
+    public SubjectResponseDTO update(@PathVariable UUID id, @Valid @RequestBody SubjectRequestDTO dto) {
         return subjectService.update(id, dto);
     }
 

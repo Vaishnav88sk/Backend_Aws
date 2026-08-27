@@ -3,8 +3,7 @@
 // import com.sensei.backend.entity.ContactUs;
 // import com.sensei.backend.error.UserNotFoundException;
 // import com.sensei.backend.service.ContactUsService;
-// import jakarta.validation.Valid;
-// import org.slf4j.Logger;
+// // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.web.bind.annotation.*;
@@ -43,7 +42,7 @@
 //     }
 
 //     @PutMapping("/api/contact-us/{id}")
-//     public ContactUs updateUser(@PathVariable("id") Long userId, @RequestBody ContactUs user){
+//     public ContactUs updateUser(@PathVariable("id") Long userId, @Valid @RequestBody ContactUs user){
 //         return contactUsService.updateUser(userId, user);
 //     }
 

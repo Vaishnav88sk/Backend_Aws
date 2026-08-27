@@ -10,8 +10,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 // import java.util.Map;
 // import java.util.Collections;
@@ -95,6 +94,7 @@
 
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.ParentUserDTO;
 import com.sensei.backend.service.ParentUserService;
@@ -105,7 +105,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -127,8 +126,8 @@ public class ParentUserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ParentUserDTO>> getAll() {
-        return ResponseEntity.ok(parentUserService.getAllParentUsers());
+    public ResponseEntity<org.springframework.data.domain.Page<ParentUserDTO>> getAll(org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(parentUserService.getAllParentUsers(pageable));
     }
 
     @PutMapping("/{parentId}")

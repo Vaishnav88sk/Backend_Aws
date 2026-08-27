@@ -7,8 +7,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 
 // @RestController
@@ -49,6 +48,7 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.interactiveprocess.InteractiveProcessRequestDTO;
 import com.sensei.backend.dto.interactiveprocess.InteractiveProcessResponseDTO;
@@ -71,7 +71,7 @@ public class InteractiveProcessController {
 
     @PostMapping
     public ResponseEntity<InteractiveProcessResponseDTO> create(
-            @RequestBody InteractiveProcessRequestDTO dto,
+            @Valid @RequestBody InteractiveProcessRequestDTO dto,
             @RequestParam(required = false) UUID childId) {
 
         if (childId != null) {
@@ -111,7 +111,7 @@ public class InteractiveProcessController {
     @PutMapping("/{processId}")
     public ResponseEntity<InteractiveProcessResponseDTO> update(
             @PathVariable UUID processId,
-            @RequestBody InteractiveProcessRequestDTO dto,
+            @Valid @RequestBody InteractiveProcessRequestDTO dto,
             @RequestParam(required = false) UUID childId) {
 
         if (childId != null) {

@@ -157,7 +157,7 @@ import com.sensei.backend.repository.PricingPlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.modelmapper.ModelMapper;
+import com.sensei.backend.mapper.ParentUserMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -167,27 +167,25 @@ public class ParentUserService {
 
     private final ParentUserRepository parentUserRepository;
     private final PricingPlanRepository pricingPlanRepository;
-    private final ModelMapper modelMapper;
+    private final ParentUserMapper parentUserMapper;
 
     // ================= CREATE =================
     public ParentUserDTO createParentUser(ParentUserDTO dto) {
-        ParentUser parent = modelMapper.map(dto, ParentUser.class);
+        ParentUser parent = parentUserMapper.toEntity(dto);
         parent = parentUserRepository.save(parent);
-        return modelMapper.map(parent, ParentUserDTO.class);
+        return parentUserMapper.toDto(parent);
     }
 
     // ================= READ =================
     public ParentUserDTO getParentUserById(UUID parentId) {
         ParentUser parent = parentUserRepository.findById(parentId)
                 .orElseThrow(() -> new ResourceNotFoundException("ParentUser not found"));
-        return modelMapper.map(parent, ParentUserDTO.class);
+        return parentUserMapper.toDto(parent);
     }
 
-    public List<ParentUserDTO> getAllParentUsers() {
-        return parentUserRepository.findAll()
-                .stream()
-                .map(p -> modelMapper.map(p, ParentUserDTO.class))
-                .collect(Collectors.toList());
+    public org.springframework.data.domain.Page<ParentUserDTO> getAllParentUsers(org.springframework.data.domain.Pageable pageable) {
+        return parentUserRepository.findAll(pageable)
+                .map(parentUserMapper::toDto);
     }
 
     // ================= UPDATE =================
@@ -214,7 +212,7 @@ public class ParentUserService {
         parent.setSpouseRelationWithChild(dto.getSpouseRelationWithChild());
 
         ParentUser saved = parentUserRepository.save(parent);
-        return modelMapper.map(saved, ParentUserDTO.class);
+        return parentUserMapper.toDto(saved);
     }
 
     // ================= DELETE =================
@@ -228,13 +226,13 @@ public class ParentUserService {
     public ParentUserDTO getParentUserByUserName(String userName) {
         ParentUser parent = parentUserRepository.findByUserName(userName)
                 .orElseThrow(() -> new ResourceNotFoundException("ParentUser not found"));
-        return modelMapper.map(parent, ParentUserDTO.class);
+        return parentUserMapper.toDto(parent);
     }
 
     public ParentUserDTO getParentUserByPhoneNumber(String phone) {
         ParentUser parent = parentUserRepository.findByPhoneNumberWithChildUsers(phone)
                 .orElseThrow(() -> new ResourceNotFoundException("ParentUser not found"));
-        return modelMapper.map(parent, ParentUserDTO.class);
+        return parentUserMapper.toDto(parent);
     }
 
     public Optional<ParentUser> findByEmail(String email) {

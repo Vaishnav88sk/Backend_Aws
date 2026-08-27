@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.interactiveprocesstracking.InteractiveProcessTrackingRequestDTO;
 import com.sensei.backend.dto.interactiveprocesstracking.InteractiveProcessTrackingResponseDTO;
@@ -24,7 +26,7 @@ public class InteractiveProcessTrackingController {
     // --------------------------------------------------
     @PostMapping("/start")
     public ResponseEntity<InteractiveProcessTrackingResponseDTO> start(
-            @RequestBody InteractiveProcessTrackingRequestDTO dto
+            @Valid @RequestBody InteractiveProcessTrackingRequestDTO dto
     ) {
         // 🔐 Validate subject access
         UUID subjectId =

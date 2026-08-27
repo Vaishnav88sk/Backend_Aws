@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.interactiveProcessSubStep.*;
 import com.sensei.backend.service.AccessControlService;
@@ -20,7 +22,7 @@ public class InteractiveProcessSubStepController {
 
     @PostMapping
     public ResponseEntity<InteractiveProcessSubStepResponseDTO> create(
-            @RequestBody InteractiveProcessSubStepRequestDTO dto,
+            @Valid @RequestBody InteractiveProcessSubStepRequestDTO dto,
             @RequestParam UUID childId
     ) {
 
@@ -57,7 +59,7 @@ public class InteractiveProcessSubStepController {
     @PutMapping("/{subStepId}")
     public ResponseEntity<InteractiveProcessSubStepResponseDTO> update(
             @PathVariable UUID subStepId,
-            @RequestBody InteractiveProcessSubStepRequestDTO dto,
+            @Valid @RequestBody InteractiveProcessSubStepRequestDTO dto,
             @RequestParam UUID childId
     ) {
 

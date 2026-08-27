@@ -1,6 +1,7 @@
 // package com.sensei.backend.controller;
 
 
+
 // import com.sensei.backend.entity.UserFeedback;
 // import com.sensei.backend.service.UserFeedbackService;
 // import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@
 
 //     // Create Feedback
 //     @PostMapping
-//     public ResponseEntity<UserFeedback> createFeedback(@RequestBody UserFeedback feedback) {
+//     public ResponseEntity<UserFeedback> createFeedback(@Valid @RequestBody UserFeedback feedback) {
 //         UserFeedback savedFeedback = userFeedbackService.createFeedback(feedback);
 //         return new ResponseEntity<>(savedFeedback, HttpStatus.CREATED);
 //     }
@@ -41,7 +42,7 @@
 
 //     // Update Feedback
 //     @PutMapping("/{id}")
-//     public ResponseEntity<UserFeedback> updateFeedback(@PathVariable Long id, @RequestBody UserFeedback updatedFeedback) {
+//     public ResponseEntity<UserFeedback> updateFeedback(@PathVariable Long id, @Valid @RequestBody UserFeedback updatedFeedback) {
 //         UserFeedback feedback = userFeedbackService.updateFeedback(id, updatedFeedback);
 //         return new ResponseEntity<>(feedback, HttpStatus.OK);
 //     }

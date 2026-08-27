@@ -1,5 +1,6 @@
 // package com.sensei.backend.controller;
 
+
 // import com.sensei.backend.dto.WalletPaymentRequest;
 // import com.sensei.backend.entity.WalletTransaction;
 // import com.sensei.backend.repository.WalletTransactionRepository;
@@ -41,7 +42,7 @@
 //      * ✅ Verify payment (uses dual tracking)
 //      */
 //     @PostMapping("/payment/verify")
-//     public ResponseEntity<?> verifyPayment(@RequestBody WalletPaymentRequest request) {
+//     public ResponseEntity<?> verifyPayment(@Valid @RequestBody WalletPaymentRequest request) {
 //         Map<String, Object> result = walletService.verifyPayment(
 //             request.getUserId(),
 //             request.getRazorpayOrderId(),
@@ -128,6 +129,8 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.wallet.*;
 import com.sensei.backend.service.WalletService;
@@ -154,7 +157,7 @@ public class WalletController {
     // 🔹 Credit wallet (referral, cashback, topup)
     @PostMapping("/credit")
     public ResponseEntity<WalletResponseDTO> credit(
-            @RequestBody WalletCreditRequestDTO dto
+            @Valid @RequestBody WalletCreditRequestDTO dto
     ) {
         return ResponseEntity.ok(walletService.credit(dto));
     }
@@ -162,7 +165,7 @@ public class WalletController {
     // 🔹 Debit wallet (plan purchase)
     @PostMapping("/debit")
     public ResponseEntity<WalletResponseDTO> debit(
-            @RequestBody WalletDebitRequestDTO dto
+            @Valid @RequestBody WalletDebitRequestDTO dto
     ) {
         return ResponseEntity.ok(walletService.debit(dto));
     }
