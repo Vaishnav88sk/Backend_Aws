@@ -1,5 +1,6 @@
 // package com.sensei.backend.controller;
 
+
 // import com.sensei.backend.dto.DigitalActivityResultCalculatorDTO;
 // import com.sensei.backend.dto.DigitalActivityResultResponseDTO;
 // import com.sensei.backend.entity.DigitalActivityResultCalculator;
@@ -18,7 +19,7 @@
 
 //     @PostMapping("/calculate")
 //     public ResponseEntity<DigitalActivityResultResponseDTO> calculateResult(
-//             @RequestBody DigitalActivityResultCalculatorDTO dto) {
+//             @Valid @RequestBody DigitalActivityResultCalculatorDTO dto) {
 
 //         DigitalActivityResultResponseDTO response = service.calculateResult(dto.getChildId(), dto.getDigitalActivityId());
 //         return new ResponseEntity<>(response, HttpStatus.OK);

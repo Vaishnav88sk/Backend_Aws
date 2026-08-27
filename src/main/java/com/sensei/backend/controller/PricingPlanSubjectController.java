@@ -1,4 +1,5 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 import com.sensei.backend.dto.pricingplansubject.PricingPlanSubjectResponseDTO;
 import com.sensei.backend.dto.pricingplansubject.PricingPlanSubjectUpdateDTO;
 import com.sensei.backend.dto.pricingplansubjectbulkrequest.PricingPlanSubjectBulkRequestDTO;
@@ -12,7 +13,6 @@ import java.util.List;
 
 import java.util.UUID;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/pricing-plan-subjects")
@@ -52,7 +52,7 @@ public class PricingPlanSubjectController {
     @PutMapping("/{mappingId}")
     public ResponseEntity<PricingPlanSubjectResponseDTO> update(
             @PathVariable UUID mappingId,
-            @RequestBody PricingPlanSubjectUpdateDTO dto) {
+            @Valid @RequestBody PricingPlanSubjectUpdateDTO dto) {
         return ResponseEntity.ok(service.update(mappingId, dto));
     }
 

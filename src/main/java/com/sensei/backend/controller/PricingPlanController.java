@@ -7,8 +7,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 
 // @RestController
@@ -50,6 +49,7 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.entity.PricingPlan;
 import com.sensei.backend.service.PricingPlanService;
@@ -68,7 +68,7 @@ public class PricingPlanController {
 
     // Create Plan
     @PostMapping
-    public ResponseEntity<PricingPlan> create(@RequestBody PricingPlan plan) {
+    public ResponseEntity<PricingPlan> create(@Valid @RequestBody PricingPlan plan) {
         return ResponseEntity.ok(pricingPlanService.create(plan));
     }
 
@@ -88,7 +88,7 @@ public class PricingPlanController {
     @PutMapping("/{id}")
     public ResponseEntity<PricingPlan> update(
             @PathVariable UUID id,
-            @RequestBody PricingPlan updatedPlan
+            @Valid @RequestBody PricingPlan updatedPlan
     ) {
         return ResponseEntity.ok(pricingPlanService.update(id, updatedPlan));
     }

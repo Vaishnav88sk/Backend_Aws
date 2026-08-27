@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.questionOption.QuestionOptionRequestDTO;
 import com.sensei.backend.dto.questionOption.QuestionOptionResponseDTO;
@@ -17,12 +19,12 @@ public class QuestionOptionController {
     private final QuestionOptionService service;
 
     @PostMapping
-    public QuestionOptionResponseDTO create(@RequestBody QuestionOptionRequestDTO dto) {
+    public QuestionOptionResponseDTO create(@Valid @RequestBody QuestionOptionRequestDTO dto) {
         return service.create(dto);
     }
 
     @PutMapping("/{id}")
-    public QuestionOptionResponseDTO update(@PathVariable UUID id, @RequestBody QuestionOptionRequestDTO dto) {
+    public QuestionOptionResponseDTO update(@PathVariable UUID id, @Valid @RequestBody QuestionOptionRequestDTO dto) {
         return service.update(id, dto);
     }
 

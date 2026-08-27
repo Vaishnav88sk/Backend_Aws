@@ -126,7 +126,7 @@ import com.sensei.backend.entity.*;
 import com.sensei.backend.exception.ResourceNotFoundException;
 import com.sensei.backend.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import com.sensei.backend.mapper.ChildUserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -139,7 +139,7 @@ public class ChildUserService {
     private final ChildUserRepository childUserRepository;
     private final ParentUserRepository parentUserRepository;
     private final PricingPlanRepository pricingPlanRepository;
-    private final ModelMapper modelMapper;
+    private final ChildUserMapper childUserMapper;
 
     public ChildUserDTO createChild(ChildUserDTO dto) {
         ChildUser child = new ChildUser();
@@ -166,13 +166,13 @@ public class ChildUserService {
             child.setPlanStartDate(dto.getPlanStartDate());
         }
 
-        return modelMapper.map(childUserRepository.save(child), ChildUserDTO.class);
+        return childUserMapper.toDto(childUserRepository.save(child));
     }
     // 🔹 All children of a parent
     public List<ChildUserDTO> getChildrenByParent(UUID parentId) {
     return childUserRepository.findByParentUser_ParentId(parentId)
             .stream()
-            .map(c -> modelMapper.map(c, ChildUserDTO.class))
+            .map(childUserMapper::toDto)
             .collect(Collectors.toList());
 }
 
@@ -180,10 +180,10 @@ public class ChildUserService {
 public ChildUserDTO getByChildId(UUID childId) {
     ChildUser child = childUserRepository.findByChildId(childId)
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
-    return modelMapper.map(child, ChildUserDTO.class);
+    return childUserMapper.toDto(child);
 }
 public ChildUserDTO createChildUser(ChildUserDTO dto) {
-    ChildUser child = modelMapper.map(dto, ChildUser.class);
+    ChildUser child = childUserMapper.toEntity(dto);
 
     // auto set plan start if plan assigned
     if (child.getActivePlanId() != null) {
@@ -191,20 +191,20 @@ public ChildUserDTO createChildUser(ChildUserDTO dto) {
     }
 
     child = childUserRepository.save(child);
-    return modelMapper.map(child, ChildUserDTO.class);
+    return childUserMapper.toDto(child);
 }
 
 public ChildUserDTO update(UUID childId, ChildUserDTO dto) {
     ChildUser existing = childUserRepository.findById(childId)
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
 
-    modelMapper.map(dto, existing);
+    childUserMapper.updateEntityFromDto(dto, existing);
 
     if (dto.getActivePlanId() != null) {
         existing.setPlanStartDate(LocalDate.now());
     }
 
-    return modelMapper.map(childUserRepository.save(existing), ChildUserDTO.class);
+    return childUserMapper.toDto(childUserRepository.save(existing));
 }
 
 public void delete(UUID childId) {
@@ -214,15 +214,13 @@ public void delete(UUID childId) {
 public List<ChildUserDTO> findByPhone(String phone) {
     return childUserRepository.findByPhoneNumber(phone)
             .stream()
-            .map(c -> modelMapper.map(c, ChildUserDTO.class))
+            .map(childUserMapper::toDto)
             .collect(Collectors.toList());
 }
 
-public List<ChildUserDTO> getAllChildren() {
-    return childUserRepository.findAll()
-            .stream()
-            .map(c -> modelMapper.map(c, ChildUserDTO.class))
-            .collect(Collectors.toList());
+public org.springframework.data.domain.Page<ChildUserDTO> getAllChildren(org.springframework.data.domain.Pageable pageable) {
+    return childUserRepository.findAll(pageable)
+            .map(childUserMapper::toDto);
 }
 
 

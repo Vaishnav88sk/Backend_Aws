@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.ChildUserDTO;
 import com.sensei.backend.dto.progress.*;
@@ -18,35 +20,35 @@ public class ChildProgressController {
 
     // Child starts an Interactive Activity
     @PostMapping("/activity/start")
-    public ResponseEntity<String> startActivity(@RequestBody StartActivityDTO dto) {
+    public ResponseEntity<String> startActivity(@Valid @RequestBody StartActivityDTO dto) {
         childProgressService.startInteractiveActivity(dto);
         return ResponseEntity.ok("Activity started");
     }
 
     // Child completes an Interactive Activity
     @PostMapping("/activity/complete")
-    public ResponseEntity<String> completeActivity(@RequestBody CompleteActivityDTO dto) {
+    public ResponseEntity<String> completeActivity(@Valid @RequestBody CompleteActivityDTO dto) {
         childProgressService.completeInteractiveActivity(dto);
         return ResponseEntity.ok("Activity completed");
     }
 
     // Child answers a Question
     @PostMapping("/question/attempt")
-    public ResponseEntity<String> attempt(@RequestBody QuestionAttemptDTO dto) {
+    public ResponseEntity<String> attempt(@Valid @RequestBody QuestionAttemptDTO dto) {
         childProgressService.recordQuestionAttempt(dto);
         return ResponseEntity.ok("Answer recorded");
     }
 
     // START DIGITAL ACTIVITY
     @PostMapping("/digital/start")
-    public ResponseEntity<String> startDigital(@RequestBody StartDigitalActivityDTO dto) {
+    public ResponseEntity<String> startDigital(@Valid @RequestBody StartDigitalActivityDTO dto) {
         childProgressService.startDigitalActivity(dto);
             return ResponseEntity.ok("Digital activity started");
 }
 
 // COMPLETE DIGITAL ACTIVITY
     @PostMapping("/digital/complete")
-    public ResponseEntity<String> completeDigital(@RequestBody CompleteDigitalActivityDTO dto) {
+    public ResponseEntity<String> completeDigital(@Valid @RequestBody CompleteDigitalActivityDTO dto) {
         childProgressService.completeDigitalActivity(dto);
         return ResponseEntity.ok("Digital activity completed");
     }

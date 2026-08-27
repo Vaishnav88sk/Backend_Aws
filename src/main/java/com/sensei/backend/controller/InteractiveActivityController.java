@@ -8,8 +8,7 @@
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.*;
 
-// import jakarta.validation.Valid;
-// import java.util.List;
+// // import java.util.List;
 // import java.util.Optional;
 // import java.util.Comparator;
 // import java.util.stream.Collectors;
@@ -72,6 +71,7 @@
 //     }
 // }
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
 
 import com.sensei.backend.dto.interactiveactivity.InteractiveActivityRequestDTO;
 import com.sensei.backend.dto.interactiveactivity.InteractiveActivityResponseDTO;
@@ -94,7 +94,7 @@ public class InteractiveActivityController {
 
     @PostMapping
     public ResponseEntity<InteractiveActivityResponseDTO> create(
-            @RequestBody InteractiveActivityRequestDTO dto) {
+            @Valid @RequestBody InteractiveActivityRequestDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
@@ -119,7 +119,7 @@ public class InteractiveActivityController {
     @PutMapping("/{id}")
     public ResponseEntity<InteractiveActivityResponseDTO> update(
             @PathVariable UUID id,
-            @RequestBody InteractiveActivityRequestDTO dto) {
+            @Valid @RequestBody InteractiveActivityRequestDTO dto) {
 
         return ResponseEntity.ok(service.update(id, dto));
     }

@@ -1,4 +1,6 @@
 package com.sensei.backend.controller;
+import jakarta.validation.Valid;
+
 
 import com.sensei.backend.dto.planpurchase.PlanPurchaseRequestDTO;
 import com.sensei.backend.service.PlanPurchaseService;
@@ -15,7 +17,7 @@ public class PlanPurchaseController {
 
     @PostMapping
     public ResponseEntity<String> purchasePlan(
-            @RequestBody PlanPurchaseRequestDTO dto
+            @Valid @RequestBody PlanPurchaseRequestDTO dto
     ) {
         planPurchaseService.purchasePlan(dto);
         return ResponseEntity.ok("PLAN_PURCHASE_INITIATED");
