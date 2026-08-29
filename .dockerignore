@@ -1,5 +1,6 @@
 # Ignore build artifacts
 target/
+target-java25/
 
 # Ignore Git directory
 .git/
@@ -18,3 +19,6 @@ target/
 
 # Ignore Dockerfile
 Dockerfile
+
+# Ignore Secrets
+.env
