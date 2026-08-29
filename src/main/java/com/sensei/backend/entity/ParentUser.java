@@ -127,6 +127,7 @@ public class ParentUser {
 
     // 🔗 FIXED mappedBy
     @OneToMany(mappedBy = "parentUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ChildUser> childUsers = new ArrayList<>();
 
     // ✅ NEW FIELD

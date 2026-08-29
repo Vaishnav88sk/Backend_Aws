@@ -114,7 +114,7 @@ public class ChildUser {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Temporal(TemporalType.DATE)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.DATE)
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
