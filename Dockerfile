@@ -1,8 +1,11 @@
 # Start with a JDK base image
-FROM maven:3.9.6-eclipse-temurin-25 AS builder
+FROM eclipse-temurin:25-jdk AS builder
 
 # Set working directory
 WORKDIR /app
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven
 
 # Copy the pom.xml
 COPY pom.xml .
@@ -17,7 +20,7 @@ COPY src ./src
 RUN mvn -B clean package -DskipTests
 
 # --- Production image (Optimized for size) ---
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:25-jre
 
 # Set working directory
 WORKDIR /app
