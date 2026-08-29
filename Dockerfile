@@ -26,7 +26,7 @@ FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 # Copy the packaged JAR from the builder stage
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/target-java25/*.jar app.jar
 
 # Expose the port used by Spring Boot
 EXPOSE 9090
