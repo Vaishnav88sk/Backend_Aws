@@ -21,10 +21,12 @@ public class ChildDigitalActivityProgress {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @Column(name = "child_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID childId;
 
     @ManyToOne(fetch = FetchType.LAZY)

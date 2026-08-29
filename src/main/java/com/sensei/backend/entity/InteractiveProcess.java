@@ -68,7 +68,8 @@ public class InteractiveProcess {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "uuid", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     // FK → interactive_activity.id

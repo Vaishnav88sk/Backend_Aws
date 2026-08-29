@@ -19,7 +19,8 @@ public class PricingPlan {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @Column(nullable = false)

@@ -19,11 +19,13 @@ public class Wallet {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     // 🔗 Parent owns wallet (1–1)
     @Column(name = "parent_id", nullable = false, unique = true)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID parentId;
 
     // Stored in RUPEES (int, no decimals)

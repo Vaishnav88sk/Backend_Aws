@@ -20,7 +20,8 @@ public class PricingPlanSubject {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

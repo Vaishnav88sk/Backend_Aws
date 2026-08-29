@@ -16,7 +16,7 @@
 
 //     @Id
 //     @GeneratedValue
-//     @Column(columnDefinition = "uuid")
+//     
 //     private UUID id;
 
 //     @Column(name = "process_id", nullable = false)
@@ -55,7 +55,8 @@ public class InteractiveProcessSubStep {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

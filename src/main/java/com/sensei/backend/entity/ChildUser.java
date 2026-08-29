@@ -93,10 +93,10 @@ public class ChildUser {
     @GeneratedValue
     @Column(
         name = "child_id",
-        columnDefinition = "uuid",
         updatable = false,
         nullable = false
     )
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID childId;
 
     @Column(name = "child_name")
@@ -129,6 +129,7 @@ public class ChildUser {
 
     // 🔐 Active plan reference
     @Column(name = "active_plan_id")
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID activePlanId;
 
     @Column(name = "plan_start_date")

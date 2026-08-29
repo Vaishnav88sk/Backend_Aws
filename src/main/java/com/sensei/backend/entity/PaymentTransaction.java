@@ -24,7 +24,8 @@ public class PaymentTransaction {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -48,8 +49,11 @@ public class PaymentTransaction {
 
     private String failureReason;
 
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID childId;
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID parentId;
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID pricingPlanId;
 
     @Column(name = "raw_response", columnDefinition = "text")

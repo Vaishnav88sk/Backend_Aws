@@ -94,7 +94,8 @@ public class DigitalActivity {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "uuid", updatable = false)
+    @Column(name = "id", updatable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     // FK → sub_module.id

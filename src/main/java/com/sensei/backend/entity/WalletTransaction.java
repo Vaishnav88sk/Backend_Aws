@@ -16,13 +16,16 @@ public class WalletTransaction {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @Column(name = "wallet_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID walletId;
 
     @Column(name = "parent_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID parentId;
 
     /**
@@ -50,6 +53,7 @@ public class WalletTransaction {
     private String referenceType;
 
     @Column(name = "reference_id")
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID referenceId;
 
     private String remarks;

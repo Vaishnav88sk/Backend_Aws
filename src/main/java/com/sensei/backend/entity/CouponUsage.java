@@ -17,18 +17,23 @@ public class CouponUsage {
 
     @Id
     @GeneratedValue
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID id;
 
     @Column(name = "coupon_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID couponId;
 
     @Column(name = "parent_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID parentId;
 
     @Column(name = "pricing_plan_id", nullable = false)
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID pricingPlanId;
 
     @Column(name = "master_transaction_id")
+    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
     private UUID masterTransactionId;
 
     @Column(name = "discount_amount", nullable = false)
