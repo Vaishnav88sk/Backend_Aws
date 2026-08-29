@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'temurin'
@@ -55,12 +55,12 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: java
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'temurin'
@@ -70,7 +70,7 @@ jobs:
         run: mvn -B clean package -DskipTests
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
   build-and-test:
     if: github.repository == 'SAARKSensei/Backend_Aws'
@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'temurin'
@@ -118,7 +118,7 @@ jobs:
 #        uses: actions/checkout@v7
 #
 #      - name: Set up JDK 25
-#        uses: actions/setup-java@v4
+#        uses: actions/setup-java@v5
 #        with:
 #          java-version: '25'
 #          distribution: 'temurin'
