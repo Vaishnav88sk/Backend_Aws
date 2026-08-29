@@ -25,10 +25,10 @@ docker-build: ## Build the Docker image
 	docker build -t sensei-backend .
 
 docker-up: ## Start the Docker containers (Dozzle logging, etc.)
-	docker-compose up -d
+	docker compose up -d
 
 docker-down: ## Stop the Docker containers
-	docker-compose down
+	docker compose down
 
 docker-logs: ## Tail the logs from Docker containers
-	docker-compose logs -f
+	docker compose logs -f

@@ -19,8 +19,8 @@ COPY src ./src
 # Package the application
 RUN mvn -B clean package -DskipTests
 
-# --- Production image (Optimized for size) ---
-FROM eclipse-temurin:25-jre
+# --- Production image (Optimized for size using Alpine) ---
+FROM azul/zulu-openjdk-alpine:25-jre
 
 # Set working directory
 WORKDIR /app
