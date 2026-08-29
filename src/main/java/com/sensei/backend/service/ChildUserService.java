@@ -128,12 +128,14 @@ import com.sensei.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import com.sensei.backend.mapper.ChildUserMapper;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChildUserService {
 
     private final ChildUserRepository childUserRepository;
@@ -166,6 +168,7 @@ public class ChildUserService {
             child.setPlanStartDate(dto.getPlanStartDate());
         }
 
+        log.info("Created ChildUser with name: {}", dto.getChildName());
         return childUserMapper.toDto(childUserRepository.save(child));
     }
     // 🔹 All children of a parent
@@ -204,11 +207,13 @@ public ChildUserDTO update(UUID childId, ChildUserDTO dto) {
         existing.setPlanStartDate(LocalDate.now());
     }
 
+    log.info("Updated ChildUser with ID: {}", childId);
     return childUserMapper.toDto(childUserRepository.save(existing));
 }
 
 public void delete(UUID childId) {
     childUserRepository.deleteById(childId);
+    log.info("Deleted ChildUser with ID: {}", childId);
 }
 
 public List<ChildUserDTO> findByPhone(String phone) {

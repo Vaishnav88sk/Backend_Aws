@@ -38,7 +38,8 @@ public class QuestionOption {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,6 +65,7 @@ public class QuestionOption {
     private Integer orderIndex;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
 }

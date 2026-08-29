@@ -16,13 +16,16 @@ public class WalletTransaction {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Column(name = "wallet_id", nullable = false)
+    
     private UUID walletId;
 
     @Column(name = "parent_id", nullable = false)
+    
     private UUID parentId;
 
     /**
@@ -50,6 +53,7 @@ public class WalletTransaction {
     private String referenceType;
 
     @Column(name = "reference_id")
+    
     private UUID referenceId;
 
     private String remarks;

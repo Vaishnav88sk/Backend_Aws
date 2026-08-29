@@ -34,7 +34,7 @@
 
 //     // ✅ Save quiz and return summary
 //     public Map<String, Object> saveQuizResultAndGetSummary(QuizResultDTO quizResultDTO) {
-//         System.out.println("✅ Quiz submitted for childId: " + quizResultDTO.getChildId());
+
 
 //         // 🧹 Step 1: Delete old results for the same child
 //         quizResultRepository.deleteByChildId(quizResultDTO.getChildId());

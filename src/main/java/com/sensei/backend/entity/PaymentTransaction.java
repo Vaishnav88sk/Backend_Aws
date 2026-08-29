@@ -24,7 +24,8 @@ public class PaymentTransaction {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -48,8 +49,11 @@ public class PaymentTransaction {
 
     private String failureReason;
 
+    
     private UUID childId;
+    
     private UUID parentId;
+    
     private UUID pricingPlanId;
 
     @Column(name = "raw_response", columnDefinition = "text")

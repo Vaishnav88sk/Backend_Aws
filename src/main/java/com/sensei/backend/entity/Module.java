@@ -62,7 +62,8 @@ public class Module {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid")
+    @Column(name = "id", nullable = false, updatable = false)
+    
     private UUID id;
 
     // FK → subject.id
@@ -80,6 +81,7 @@ public class Module {
     private Integer orderIndex;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp

@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS interactive_process (
     FOREIGN KEY (sub_module_id) REFERENCES sub_module(id)
 );
 
-CREATE TABLE IF NOT EXISTS interactive_process_sub_step (
+CREATE TABLE IF NOT EXISTS interactive_process_substep (
     id CHAR(36) NOT NULL PRIMARY KEY,
     process_id CHAR(36),
     title TEXT,
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS child_user (
     FOREIGN KEY (parent_id) REFERENCES parent_user(parent_id)
 );
 
-CREATE TABLE IF NOT EXISTS child_sub_module_completion (
+CREATE TABLE IF NOT EXISTS child_submodule_completion (
     id CHAR(36) NOT NULL PRIMARY KEY,
     child_id CHAR(36),
     sub_module_id CHAR(36),
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS child_question_attempt (
     id CHAR(36) NOT NULL PRIMARY KEY,
     child_id CHAR(36),
     question_id CHAR(36),
-    selected_option_id CHAR(36),
+    option_id CHAR(36),
     is_correct BOOLEAN,
     attempted_at DATETIME,
     FOREIGN KEY (child_id) REFERENCES child_user(child_id),
@@ -229,12 +229,12 @@ CREATE TABLE IF NOT EXISTS child_question_attempt (
 CREATE TABLE IF NOT EXISTS interactive_process_tracking (
     id CHAR(36) NOT NULL PRIMARY KEY,
     child_id CHAR(36),
-    process_id CHAR(36),
+    interactive_process_id CHAR(36),
     status VARCHAR(50),
     started_at DATETIME,
     completed_at DATETIME,
     FOREIGN KEY (child_id) REFERENCES child_user(child_id),
-    FOREIGN KEY (process_id) REFERENCES interactive_process(id)
+    FOREIGN KEY (interactive_process_id) REFERENCES interactive_process(id)
 );
 
 CREATE TABLE IF NOT EXISTS referral_code (

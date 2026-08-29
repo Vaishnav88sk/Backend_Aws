@@ -66,7 +66,8 @@ public class SubModule {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid")
+    @Column(name = "id", nullable = false, updatable = false)
+    
     private UUID id;
 
     // FK → module.id
@@ -84,6 +85,7 @@ public class SubModule {
     private Integer orderIndex;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp

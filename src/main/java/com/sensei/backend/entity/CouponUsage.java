@@ -17,18 +17,23 @@ public class CouponUsage {
 
     @Id
     @GeneratedValue
+    
     private UUID id;
 
     @Column(name = "coupon_id", nullable = false)
+    
     private UUID couponId;
 
     @Column(name = "parent_id", nullable = false)
+    
     private UUID parentId;
 
     @Column(name = "pricing_plan_id", nullable = false)
+    
     private UUID pricingPlanId;
 
     @Column(name = "master_transaction_id")
+    
     private UUID masterTransactionId;
 
     @Column(name = "discount_amount", nullable = false)

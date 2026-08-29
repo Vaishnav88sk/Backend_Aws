@@ -245,7 +245,8 @@ public class Question {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -269,6 +270,7 @@ public class Question {
 
     // ✅ REQUIRED for safe delete
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 }
 

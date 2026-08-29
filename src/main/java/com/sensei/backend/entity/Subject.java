@@ -62,7 +62,8 @@ public class Subject {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "uuid")
+    @Column(name = "id", updatable = false, nullable = false)
+    
     private UUID id;
 
     @Column(name = "name", nullable = false, columnDefinition = "text")
@@ -75,6 +76,7 @@ public class Subject {
     private String iconUrl;
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp

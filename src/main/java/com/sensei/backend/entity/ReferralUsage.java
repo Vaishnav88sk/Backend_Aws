@@ -21,16 +21,20 @@ public class ReferralUsage {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Column(name = "referral_code_id", nullable = false)
+    
     private UUID referralCodeId;
 
     @Column(name = "referrer_parent_id", nullable = false)
+    
     private UUID referrerParentId;
 
     @Column(name = "referred_parent_id", nullable = false)
+    
     private UUID referredParentId;
 
     @Column(name = "reward_amount", nullable = false)

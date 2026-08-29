@@ -90,7 +90,8 @@ public class ParentUser {
 
     @Id
     @GeneratedValue
-    @Column(name = "parent_id", columnDefinition = "uuid")
+    @Column(name = "parent_id")
+    
     private UUID parentId;
 
     private String name;
@@ -126,6 +127,7 @@ public class ParentUser {
 
     // 🔗 FIXED mappedBy
     @OneToMany(mappedBy = "parentUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ChildUser> childUsers = new ArrayList<>();
 
     // ✅ NEW FIELD

@@ -25,7 +25,8 @@ public class InteractiveProcessTracking {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

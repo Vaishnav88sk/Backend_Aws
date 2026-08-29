@@ -19,7 +19,8 @@ public class MasterTransaction {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -31,10 +32,14 @@ public class MasterTransaction {
     private Integer amount;
     private String currency;
 
+    
     private UUID childId;
+    
     private UUID parentId;
 
+    
     private UUID pricingPlanId;
+    
     private UUID paymentTransactionId;
 
     private String remarks;

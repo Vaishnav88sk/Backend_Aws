@@ -16,10 +16,12 @@ public class ChildInteractiveActivityProgress {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Column(name = "child_id", nullable = false)
+    
     private UUID childId;
 
     @ManyToOne(fetch = FetchType.LAZY)

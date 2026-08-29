@@ -16,6 +16,7 @@ public class Coupon {
 
     @Id
     @GeneratedValue
+    
     private UUID id;
 
     @Column(unique = true, nullable = false)
@@ -34,6 +35,7 @@ public class Coupon {
     private Integer minOrderAmount;
 
     @Column(name = "applicable_pricing_plan_id")
+    
     private UUID applicablePricingPlanId;
 
     @Column(name = "max_usage")

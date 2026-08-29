@@ -19,20 +19,33 @@
    cd Backend_Aws/
 ```
 
-2. Build the project:
+2. We use a `Makefile` to simplify common development commands. You can view all available commands by running:
 ```sh
-   mvn clean package -DskipTests
+   make help
 ```
 
-3. Run locally with Docker:
-   (prerequisites: Docker installed and enabled)
+### Available Makefile Commands:
+
+**Java / Maven:**
+- `make compile` - Compile the Java source code
+- `make test` - Run the unit tests
+- `make build` - Clean and package the application into a JAR
+- `make run` - Run the Spring Boot application locally on port 9090
+- `make clean` - Clean the target directory
+
+**Docker:**
+- `make docker-build` - Build the Docker image locally
+- `make docker-up` - Spin up local Docker infrastructure (like Dozzle for logs)
+- `make docker-down` - Tear down the Docker infrastructure
+- `make docker-logs` - Tail the logs from Docker containers
+
+*Example workflow:*
 ```sh
-   docker build -t sensei-springboot-backend .
-   docker run -p 9090:9090 --name sensei-springboot-app sensei-springboot-backend
-```
-Or without docker:
-```shell
-mvn spring-boot:run
+# 1. Start your database and logging containers
+make docker-up
+
+# 2. Run your application locally
+make run
 ```
 Test on http://localhost:9090/api/.....
 

@@ -94,7 +94,8 @@ public class DigitalActivity {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "uuid", updatable = false)
+    @Column(name = "id", updatable = false)
+    
     private UUID id;
 
     // FK → sub_module.id
@@ -121,6 +122,7 @@ public class DigitalActivity {
     private Integer orderIndex;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp

@@ -19,11 +19,13 @@ public class Wallet {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     // 🔗 Parent owns wallet (1–1)
     @Column(name = "parent_id", nullable = false, unique = true)
+    
     private UUID parentId;
 
     // Stored in RUPEES (int, no decimals)

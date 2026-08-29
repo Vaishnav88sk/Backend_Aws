@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/payments/razorpay")
 @RequiredArgsConstructor
+@Slf4j
 public class RazorpayController {
 
     private final RazorpayOrderService orderService;
@@ -35,6 +37,7 @@ public class RazorpayController {
             @RequestParam UUID childId,
             @RequestParam UUID pricingPlanId
     ) throws Exception {
+        log.info("Razorpay plan order created for childId: {}", childId);
 
         return ResponseEntity.ok(
                 orderService.createOrder(
@@ -57,6 +60,7 @@ public class RazorpayController {
             @RequestParam String paymentId,
             @RequestParam String signature
     ) throws Exception {
+        log.info("Verifying Razorpay plan payment orderId: {}", orderId);
 
         verificationService.verifyAndActivate(
                 orderId,
@@ -75,6 +79,7 @@ public class RazorpayController {
     public ResponseEntity<Map<String, Object>> createWalletTopupOrder(
             @RequestParam int amount   // rupees
     ) throws Exception {
+        log.info("Razorpay wallet topup created for amount: {}", amount);
 
         var order = walletTopupService.createWalletTopupOrder(amount);
 

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    # Build the image using the local Dockerfile (use this for local testing)
+    build: .
+    # For EC2: comment out 'build: .' above, and uncomment the line below:
+    # image: your-dockerhub-username/sensei-backend:latest
+    container_name: sensei-backend
+    # Use host networking so 'localhost' perfectly maps to the physical machine locally. 
+    # This natively exposes port 9090, working flawlessly for both Local (physical DB) and EC2 (RDS).
+    network_mode: "host"
+    # Load environment variables (like DB passwords) from the .env file securely
+    env_file:
+      - .env
+    # Automatically restart the container if it crashes or the server reboots
+    restart: unless-stopped
+    # Prevent logs from filling up the entire server hard drive
+    # Keeps a maximum of 3 log files, each up to 10 megabytes in size
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # dozzle for viewing logs
+  dozzle:
+    # Use the official, ultra-lightweight Dozzle image
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    # Give Dozzle read-only access to the Docker socket so it can read other containers' logs
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # Map Dozzle to port 9999 so it doesn't conflict with common apps (like Tomcat on 8080)
+    ports:
+      - "9999:8080"
+    # Automatically restart Dozzle if the server reboots
+    restart: unless-stopped
+    # Wait for the backend to start before starting Dozzle
+    depends_on:
+      - backend

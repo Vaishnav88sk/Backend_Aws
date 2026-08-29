@@ -5,7 +5,7 @@ import com.sensei.backend.entity.ChildUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface ChildUserMapper {
     ChildUserDTO toDto(ChildUser entity);
     ChildUser toEntity(ChildUserDTO dto);

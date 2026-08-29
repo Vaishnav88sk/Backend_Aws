@@ -16,10 +16,12 @@ public class ReferralCode {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "uuid")
+    
+    
     private UUID id;
 
     @Column(name = "parent_id", nullable = false, unique = true)
+    
     private UUID parentId;
 
     @Column(nullable = false, unique = true)
