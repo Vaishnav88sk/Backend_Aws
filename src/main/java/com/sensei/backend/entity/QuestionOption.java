@@ -39,7 +39,7 @@ public class QuestionOption {
     @Id
     @GeneratedValue
     
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -17,11 +17,11 @@ public class ChildQuestionAttempt {
     @Id
     @GeneratedValue
     @Column( updatable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @Column(name = "child_id", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID childId;
 
     @ManyToOne(fetch = FetchType.LAZY)

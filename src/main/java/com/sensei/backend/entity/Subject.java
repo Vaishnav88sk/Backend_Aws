@@ -63,7 +63,7 @@ public class Subject {
     @Id
     @GeneratedValue
     @Column(name = "id", updatable = false, nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @Column(name = "name", nullable = false, columnDefinition = "text")

@@ -20,7 +20,7 @@ public class PricingPlan {
     @Id
     @GeneratedValue
     
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @Column(nullable = false)

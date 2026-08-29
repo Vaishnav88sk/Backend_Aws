@@ -105,7 +105,7 @@ public class InteractiveActivity {
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false, updatable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

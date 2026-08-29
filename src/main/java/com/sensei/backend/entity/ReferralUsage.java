@@ -22,19 +22,19 @@ public class ReferralUsage {
     @Id
     @GeneratedValue
     
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @Column(name = "referral_code_id", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID referralCodeId;
 
     @Column(name = "referrer_parent_id", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID referrerParentId;
 
     @Column(name = "referred_parent_id", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID referredParentId;
 
     @Column(name = "reward_amount", nullable = false)

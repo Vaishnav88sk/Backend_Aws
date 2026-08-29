@@ -63,7 +63,7 @@ public class Module {
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false, updatable = false)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     // FK → subject.id

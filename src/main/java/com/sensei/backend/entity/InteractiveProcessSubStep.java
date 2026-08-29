@@ -56,7 +56,7 @@ public class InteractiveProcessSubStep {
     @Id
     @GeneratedValue
     
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

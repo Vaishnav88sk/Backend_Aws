@@ -91,7 +91,7 @@ public class ParentUser {
     @Id
     @GeneratedValue
     @Column(name = "parent_id")
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID parentId;
 
     private String name;

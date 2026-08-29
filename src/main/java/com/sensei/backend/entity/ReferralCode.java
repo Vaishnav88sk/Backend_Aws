@@ -17,11 +17,11 @@ public class ReferralCode {
     @Id
     @GeneratedValue
     
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID id;
 
     @Column(name = "parent_id", nullable = false, unique = true)
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR)
+    
     private UUID parentId;
 
     @Column(nullable = false, unique = true)
