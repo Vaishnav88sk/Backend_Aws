@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author vaishnav88sk
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final GoogleAuthService googleAuthService;
@@ -27,7 +29,7 @@ public class AuthController {
     // GOOGLE LOGIN (UNCHANGED)
     @PostMapping("/google")
     public ResponseEntity<?> googleLogin(@RequestParam String idToken) {
-
+        log.info("Google login attempt");
         GoogleIdToken.Payload payload = googleAuthService.verifyToken(idToken);
 
         String email = payload.getEmail();
@@ -49,6 +51,7 @@ public class AuthController {
                     .build();
 
             user = parentUserRepository.save(user);
+            log.info("New parent user created from Google login: {}", email);
         }
 
         // Generate JWT
@@ -63,7 +66,7 @@ public class AuthController {
     // TEMP ADMIN LOGIN FOR POSTMAN (NEW)
     @PostMapping("/test-login")
     public ResponseEntity<?> testLogin(@RequestParam String email) {
-
+        log.info("Test login attempt for email: {}", email);
         if (!email.equals(testAdminEmail)) {
             return ResponseEntity.status(403).body("Not allowed");
         }

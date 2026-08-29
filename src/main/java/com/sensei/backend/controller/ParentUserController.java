@@ -117,6 +117,7 @@ public class ParentUserController {
 
     @PostMapping
     public ResponseEntity<ParentUserDTO> create(@Valid @RequestBody ParentUserDTO dto) {
+        log.info("Request to create ParentUser: {}", dto.getEmail());
         return new ResponseEntity<>(parentUserService.createParentUser(dto), HttpStatus.CREATED);
     }
 
@@ -137,6 +138,7 @@ public class ParentUserController {
 
     @DeleteMapping("/{parentId}")
     public ResponseEntity<Void> delete(@PathVariable UUID parentId) {
+        log.info("Request to delete ParentUser: {}", parentId);
         parentUserService.deleteParentUser(parentId);
         return ResponseEntity.noContent().build();
     }
@@ -148,6 +150,7 @@ public class ParentUserController {
 
     @GetMapping("/phone")
     public ResponseEntity<ParentUserDTO> byPhone(@RequestParam String phone) {
+        log.info("Request to fetch ParentUser by phone: {}", phone);
         return ResponseEntity.ok(parentUserService.getParentUserByPhoneNumber(phone));
     }
 

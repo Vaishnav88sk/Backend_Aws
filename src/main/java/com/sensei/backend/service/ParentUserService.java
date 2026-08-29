@@ -173,6 +173,7 @@ public class ParentUserService {
     public ParentUserDTO createParentUser(ParentUserDTO dto) {
         ParentUser parent = parentUserMapper.toEntity(dto);
         parent = parentUserRepository.save(parent);
+        log.info("Created ParentUser with email: {}", dto.getEmail());
         return parentUserMapper.toDto(parent);
     }
 
@@ -212,6 +213,7 @@ public class ParentUserService {
         parent.setSpouseRelationWithChild(dto.getSpouseRelationWithChild());
 
         ParentUser saved = parentUserRepository.save(parent);
+        log.info("Updated ParentUser with ID: {}", parentId);
         return parentUserMapper.toDto(saved);
     }
 
@@ -220,6 +222,7 @@ public class ParentUserService {
         ParentUser parent = parentUserRepository.findById(parentId)
                 .orElseThrow(() -> new ResourceNotFoundException("ParentUser not found"));
         parentUserRepository.delete(parent);
+        log.info("Deleted ParentUser with ID: {}", parentId);
     }
 
     // ================= FILTERS =================
@@ -232,6 +235,7 @@ public class ParentUserService {
     public ParentUserDTO getParentUserByPhoneNumber(String phone) {
         ParentUser parent = parentUserRepository.findByPhoneNumberWithChildUsers(phone)
                 .orElseThrow(() -> new ResourceNotFoundException("ParentUser not found"));
+        log.info("Fetched ParentUser by phone number: {}", phone);
         return parentUserMapper.toDto(parent);
     }
 
