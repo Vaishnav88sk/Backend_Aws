@@ -132,6 +132,7 @@ Immediately following parent creation, parents take a baseline quiz that assigns
       * If all questions are answered: Sets parent's `isQuizCompleted` to `true`.
       * If only partial questions are answered (e.g. 3 of 7): `isQuizCompleted` remains `false`.
     * If called again for the same child, it seamlessly delegates to `updateQuiz` without throwing duplicate errors.
+  * **Skipping All Questions:** Send `"selectedOptionIds": []`. A `null` or missing value is also treated as empty. An attempt is saved with no options, no skill points are awarded, and `isQuizCompleted` stays `false`.
 * **Fetch Attempt Status:** `GET /api/v1/parent-quiz/attempt/{parentId}/{childId}`
   * **Response (JSON):**
     ```json
@@ -154,7 +155,22 @@ Immediately following parent creation, parents take a baseline quiz that assigns
 ### 2C. Child Life Skills Dashboard
 After the quiz, the frontend can fetch the initially unlocked life skills for the dashboard.
 * **Endpoint:** `GET /api/v1/child/{childId}/lifeskills`
-* **Response:** Returns a `ChildLifeSkillReportResponse` listing all skills the child currently possesses.
+* **Response:** Returns a `ChildLifeSkillReportResponse` with two lists:
+  * `showing`: skills with a score greater than 0.
+  * `toDevelopFurther`: all remaining skills.
+  ```json
+  {
+      "showing": ["EMPATHY", "PROBLEM_SOLVING"],
+      "toDevelopFurther": ["EFFECTIVE_COMMUNICATION", "CRITICAL_THINKING", "..."]
+  }
+  ```
+* **No Skill Points (quiz skipped or not attempted):** Both lists are returned empty.
+  ```json
+  {
+      "showing": [],
+      "toDevelopFurther": []
+  }
+  ```
 
 ### 2D. Update Parent Profile
 Parents can update personal information, contact info, address fields, and the general `isSurveyCompleted` flag.
@@ -578,4 +594,4 @@ Parents can view the aggregated performance data of their children.
 
 ### 7B. Fetch Life Skills Mapping
 * **Endpoint:** `GET /api/v1/child/{childId}/lifeskills`
-* **Response:** Returns a computed breakdown of soft/hard skills developed based on completed interactive activities.
+* **Response:** Returns `showing` and `toDevelopFurther` skill lists based on life skill points earned from the parent quiz. Both lists are empty if the child has no skill points. See [2C](#2c-child-life-skills-dashboard).

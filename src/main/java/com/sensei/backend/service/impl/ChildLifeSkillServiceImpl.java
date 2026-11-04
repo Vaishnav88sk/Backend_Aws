@@ -34,6 +34,14 @@ public class ChildLifeSkillServiceImpl implements ChildLifeSkillService {
                         .anyMatch(skill -> skill.getLifeSkill() == type && skill.getScore() != null && skill.getScore() > 0))
                 .collect(Collectors.toList());
                 
+        // No skill points means quiz was skipped, so return both lists empty
+        if (showing.isEmpty()) {
+            return ChildLifeSkillReportResponse.builder()
+                    .showing(List.of())
+                    .toDevelopFurther(List.of())
+                    .build();
+        }
+
         List<LifeSkillType> toDevelopFurther = Arrays.stream(LifeSkillType.values())
                 .filter(type -> !showing.contains(type))
                 .collect(Collectors.toList());

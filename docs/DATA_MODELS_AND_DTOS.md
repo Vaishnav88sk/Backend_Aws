@@ -121,9 +121,13 @@ This guide maps **what is stored in the database** against the **exact JSON para
 ### ⚠️ Gotcha 5: `isQuizCompleted` is System-Calculated (Read-Only)
 - **Frontend cannot set this:** The backend marks this field as read-only. Calling `POST /api/parent-users` or `PATCH /api/parent-users/{parentId}` with `isQuizCompleted` will be ignored.
 - **How it turns `true`:** Only when **all active quiz questions** are answered via `POST /api/v1/parent-quiz/submit` or `PUT /api/v1/parent-quiz/update`. Partial submissions (e.g. 3 of 7 answered) leave `isQuizCompleted` as `false`.
+- **All skipped:** Sending `"selectedOptionIds": []` (or `null`) saves an empty attempt and keeps `isQuizCompleted` as `false`.
 
 ### ⚠️ Gotcha 6: `isSurveyCompleted` is General (Writable)
 - **Frontend can set this:** Clients can read or update `isSurveyCompleted` via `POST /api/parent-users` or `PATCH /api/parent-users/{parentId}` (e.g. `{"isSurveyCompleted": true}`).
+
+### ⚠️ Gotcha 7: Empty Life Skills Report
+- `GET /api/v1/child/{childId}/lifeskills` returns both `showing` and `toDevelopFurther` as empty lists when the child has no skill points (quiz skipped or not attempted). Frontend should handle this as an empty state instead of showing all skills as "to develop".
 
 ---
 

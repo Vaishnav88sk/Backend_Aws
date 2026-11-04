@@ -355,6 +355,7 @@ Below is a list of all active API endpoints available in the system for testing.
 > - `GET /api/v1/parent-quiz/attempt/{parentId}/{childId}`: Returns `selectedOptionIds`, `answeredQuestionIds`, `unansweredQuestionIds`, `totalQuestions`, `answeredCount`, and `isQuizCompleted`.
 > - `GET /api/v1/parent-quiz/unfilled/{parentId}/{childId}`: Returns only the question objects that have not yet been answered by the child.
 > - `isQuizCompleted` on the Parent account is only set to `true` once **all** active questions have been answered.
+> - To skip all questions, send `"selectedOptionIds": []`. A `null` value is also treated as empty, so it no longer returns a 500 error.
 
 
 ## ChildLifeSkill
@@ -364,6 +365,9 @@ Below is a list of all active API endpoints available in the system for testing.
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/v1/child/{childId}/lifeskills` | `getChildLifeSkills` |
+
+> [!NOTE]
+> Returns `showing` (skills with score > 0) and `toDevelopFurther` (remaining skills). If the child has no skill points (quiz skipped or not attempted), both lists are empty.
 
 
 ## ReportCard

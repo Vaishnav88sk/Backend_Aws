@@ -72,7 +72,8 @@ public class ParentQuizServiceImpl implements ParentQuizService {
         }
 
         // Process options and unlock lifeskills
-        List<ParentQuizOption> selectedOptions = optionRepository.findAllById(request.getSelectedOptionIds());
+        List<ParentQuizOption> selectedOptions = optionRepository.findAllById(
+                request.getSelectedOptionIds() != null ? request.getSelectedOptionIds() : java.util.Collections.emptyList());
         for (ParentQuizOption option : selectedOptions) {
             if (option.getAssociatedLifeSkills() != null) {
                 for (var skill : option.getAssociatedLifeSkills()) {
@@ -114,7 +115,8 @@ public class ParentQuizServiceImpl implements ParentQuizService {
         List<ParentQuizOption> currentSelectedOptions = new java.util.ArrayList<>(
                 attempt.getSelectedOptions() != null ? attempt.getSelectedOptions() : java.util.Collections.emptyList()
         );
-        List<ParentQuizOption> newOptions = optionRepository.findAllById(request.getSelectedOptionIds());
+        List<ParentQuizOption> newOptions = optionRepository.findAllById(
+                request.getSelectedOptionIds() != null ? request.getSelectedOptionIds() : java.util.Collections.emptyList());
 
         for (ParentQuizOption newOption : newOptions) {
             java.util.UUID questionId = newOption.getQuestion().getId();
