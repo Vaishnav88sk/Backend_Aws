@@ -47,6 +47,11 @@ public class ChildUserController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{childId}/pfp")
+    public ResponseEntity<ChildUserDTO> removePfp(@PathVariable UUID childId) {
+        return ResponseEntity.ok(childUserService.resetPfp(childId));
+    }
+
     @GetMapping("/phone/{phone}")
     public ResponseEntity<List<ChildUserDTO>> getByPhone(@PathVariable String phone) {
         return ResponseEntity.ok(childUserService.findByPhone(phone));

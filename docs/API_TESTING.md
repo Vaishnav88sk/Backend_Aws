@@ -174,6 +174,7 @@ Below is a list of all active API endpoints available in the system for testing.
 | `PUT` | `/api/children/{childId}` | `update` (Supports partial update with ChildUserUpdateDTO) |
 | `PATCH` | `/api/children/{childId}` | `patch` (Partial update with ChildUserUpdateDTO) |
 | `DELETE` | `/api/children/{childId}` | `delete` |
+| `DELETE` | `/api/children/{childId}/pfp` | `removePfp` (Deletes custom photo from R2 and reverts to default avatar) |
 | `GET` | `/api/children/phone/{phone}` | `getByPhone` |
 | `GET` | `/api/children` | `unknown` |
 | `GET` | `/api/children/parent/{parentId}` | `getChildrenByParent` |

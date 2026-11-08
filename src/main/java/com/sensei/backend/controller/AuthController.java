@@ -69,6 +69,7 @@ public class AuthController {
             ChildUser emptyChild = new ChildUser();
             emptyChild.setParentUser(user);
             emptyChild.setChildName(null);
+            emptyChild.setPfp(com.sensei.backend.service.ChildUserService.getDefaultAvatar());
             childUserRepository.save(emptyChild);
             user.getChildUsers().add(emptyChild);
 

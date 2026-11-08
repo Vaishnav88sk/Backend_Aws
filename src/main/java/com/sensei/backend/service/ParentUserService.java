@@ -199,6 +199,7 @@ public class ParentUserService {
         ChildUser emptyChild = new ChildUser();
         emptyChild.setParentUser(parent);
         emptyChild.setChildName(null);
+        emptyChild.setPfp(ChildUserService.getDefaultAvatar());
         
         childUserRepository.save(emptyChild);
         if (parent.getChildUsers() == null) {

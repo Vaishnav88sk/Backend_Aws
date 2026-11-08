@@ -120,10 +120,12 @@ package com.sensei.backend.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sensei.backend.dto.ChildUserDTO;
 import com.sensei.backend.dto.ChildUserUpdateDTO;
@@ -135,6 +137,7 @@ import com.sensei.backend.mapper.ChildUserMapper;
 import com.sensei.backend.repository.ChildUserRepository;
 import com.sensei.backend.repository.ParentUserRepository;
 import com.sensei.backend.repository.PricingPlanRepository;
+import com.sensei.backend.service.MediaStorageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +152,17 @@ public class ChildUserService {
     private final ParentUserRepository parentUserRepository;
     private final PricingPlanRepository pricingPlanRepository;
     private final ChildUserMapper childUserMapper;
+    private final MediaStorageService mediaStorageService;
     private final jakarta.persistence.EntityManager entityManager;
+
+    public static final List<String> DEFAULT_AVATARS = List.of(
+            "avatar_1", "avatar_2", "avatar_3", "avatar_4", "avatar_5", "avatar_6"
+    );
+
+    public static String getDefaultAvatar() {
+        int index = ThreadLocalRandom.current().nextInt(DEFAULT_AVATARS.size());
+        return DEFAULT_AVATARS.get(index);
+    }
 
     @Transactional
     public ChildUserDTO createChild(ChildUserDTO dto) {
@@ -167,7 +180,12 @@ public class ChildUserService {
         child.setSchoolEmail(dto.getSchoolEmail());
         child.setSchoolAddress(dto.getSchoolAddress());
         child.setMedicalHistory(dto.getMedicalHistory());
-        child.setPfp(dto.getPfp());
+        
+        if (StringUtils.hasText(dto.getPfp())) {
+            child.setPfp(dto.getPfp().trim());
+        } else {
+            child.setPfp(getDefaultAvatar());
+        }
 
         ParentUser parent = parentUserRepository.findById(dto.getParentId())
                 .orElseThrow(() -> new RuntimeException("Parent not found"));
@@ -203,6 +221,10 @@ public ChildUserDTO getByChildId(UUID childId) {
 public ChildUserDTO createChildUser(ChildUserDTO dto) {
     ChildUser child = childUserMapper.toEntity(dto);
 
+    if (!StringUtils.hasText(child.getPfp())) {
+        child.setPfp(getDefaultAvatar());
+    }
+
     // auto set plan start if plan assigned
     if (child.getActivePlanId() != null) {
         child.setPlanStartDate(LocalDate.now());
@@ -217,7 +239,13 @@ public ChildUserDTO update(UUID childId, ChildUserUpdateDTO dto) {
     ChildUser existing = childUserRepository.findById(childId)
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
 
+    String oldPfp = existing.getPfp();
+
     childUserMapper.updateEntityFromUpdateDto(dto, existing);
+
+    if (dto.getPfp() != null) {
+        handlePfpTransition(existing, oldPfp, dto.getPfp());
+    }
 
     if (dto.getParentId() != null && (existing.getParentUser() == null || !dto.getParentId().equals(existing.getParentUser().getParentId()))) {
         ParentUser parent = parentUserRepository.findById(dto.getParentId())
@@ -238,7 +266,13 @@ public ChildUserDTO update(UUID childId, ChildUserDTO dto) {
     ChildUser existing = childUserRepository.findById(childId)
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
 
+    String oldPfp = existing.getPfp();
+
     childUserMapper.updateEntityFromDto(dto, existing);
+
+    if (dto.getPfp() != null) {
+        handlePfpTransition(existing, oldPfp, dto.getPfp());
+    }
 
     if (dto.getActivePlanId() != null && existing.getPlanStartDate() == null) {
         existing.setPlanStartDate(LocalDate.now());
@@ -246,6 +280,39 @@ public ChildUserDTO update(UUID childId, ChildUserDTO dto) {
 
     log.info("Updated ChildUser with ID: {}", childId);
     return childUserMapper.toDto(childUserRepository.save(existing));
+}
+
+@Transactional
+public ChildUserDTO resetPfp(UUID childId) {
+    ChildUser existing = childUserRepository.findById(childId)
+            .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
+
+    String oldPfp = existing.getPfp();
+    if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http")) {
+        mediaStorageService.deleteFile(oldPfp);
+    }
+
+    existing.setPfp(getDefaultAvatar());
+    log.info("Reset pfp to default avatar for ChildUser with ID: {}", childId);
+    return childUserMapper.toDto(childUserRepository.save(existing));
+}
+
+private void handlePfpTransition(ChildUser existing, String oldPfp, String newPfp) {
+    String trimmedNew = newPfp.trim();
+    // If user removed or cleared photo -> delete old R2 file (if any) and reset to default avatar
+    if (trimmedNew.isEmpty()) {
+        if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http")) {
+            mediaStorageService.deleteFile(oldPfp);
+        }
+        existing.setPfp(getDefaultAvatar());
+        return;
+    }
+
+    // If user uploaded a new custom photo and previous was a different custom R2 file -> delete old file
+    if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http") && !oldPfp.equals(trimmedNew)) {
+        mediaStorageService.deleteFile(oldPfp);
+    }
+    existing.setPfp(trimmedNew);
 }
 
 @Transactional

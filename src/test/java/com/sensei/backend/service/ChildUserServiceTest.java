@@ -43,6 +43,9 @@ class ChildUserServiceTest {
     @Mock
     private ChildUserMapper childUserMapper;
 
+    @Mock
+    private MediaStorageService mediaStorageService;
+
     @InjectMocks
     private ChildUserService childUserService;
 
@@ -118,5 +121,51 @@ class ChildUserServiceTest {
         assertEquals(newParent, childUser.getParentUser());
         verify(parentUserRepository, times(1)).findById(newParentId);
         verify(childUserRepository, times(1)).save(childUser);
+    }
+
+    @Test
+    void testUpdate_WithNewCustomPfp_DeletesOldR2Photo() {
+        childUser.setPfp("https://media.mysite.com/avatars/old.png");
+        ChildUserUpdateDTO updateDTO = new ChildUserUpdateDTO();
+        updateDTO.setPfp("https://media.mysite.com/avatars/new.png");
+
+        when(childUserRepository.findById(testChildId)).thenReturn(Optional.of(childUser));
+        when(childUserRepository.save(childUser)).thenReturn(childUser);
+        when(childUserMapper.toDto(childUser)).thenReturn(childUserDTO);
+
+        childUserService.update(testChildId, updateDTO);
+
+        verify(mediaStorageService, times(1)).deleteFile("https://media.mysite.com/avatars/old.png");
+        assertEquals("https://media.mysite.com/avatars/new.png", childUser.getPfp());
+    }
+
+    @Test
+    void testUpdate_ClearPfp_DeletesOldR2PhotoAndRevertsToDefaultAvatar() {
+        childUser.setPfp("https://media.mysite.com/avatars/old.png");
+        ChildUserUpdateDTO updateDTO = new ChildUserUpdateDTO();
+        updateDTO.setPfp(""); // User cleared photo
+
+        when(childUserRepository.findById(testChildId)).thenReturn(Optional.of(childUser));
+        when(childUserRepository.save(childUser)).thenReturn(childUser);
+        when(childUserMapper.toDto(childUser)).thenReturn(childUserDTO);
+
+        childUserService.update(testChildId, updateDTO);
+
+        verify(mediaStorageService, times(1)).deleteFile("https://media.mysite.com/avatars/old.png");
+        org.junit.jupiter.api.Assertions.assertTrue(ChildUserService.DEFAULT_AVATARS.contains(childUser.getPfp()));
+    }
+
+    @Test
+    void testResetPfp_DeletesOldR2PhotoAndRevertsToDefaultAvatar() {
+        childUser.setPfp("https://media.mysite.com/avatars/custom.png");
+
+        when(childUserRepository.findById(testChildId)).thenReturn(Optional.of(childUser));
+        when(childUserRepository.save(childUser)).thenReturn(childUser);
+        when(childUserMapper.toDto(childUser)).thenReturn(childUserDTO);
+
+        childUserService.resetPfp(testChildId);
+
+        verify(mediaStorageService, times(1)).deleteFile("https://media.mysite.com/avatars/custom.png");
+        org.junit.jupiter.api.Assertions.assertTrue(ChildUserService.DEFAULT_AVATARS.contains(childUser.getPfp()));
     }
 }
