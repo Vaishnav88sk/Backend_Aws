@@ -7,6 +7,15 @@ Below is a list of all active API endpoints available in the system for testing.
 > - **Authentication:** Most of these endpoints (except `/api/auth/google` and `/api/auth/test-login`) are secured and require a valid JWT token. You must pass this in the header: `Authorization: Bearer <your_access_token>`.
 > - **POST/PUT Requests:** Endpoints that create or update data (`POST`, `PUT`, `PATCH`) typically require a JSON request body (`Content-Type: application/json`) with the necessary object fields.
 
+## Media Management (Cloudflare R2 Direct Uploads)
+
+**Base Path:** `/api/v1/media`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/media/presigned-upload-url` | Generate temporary presigned PUT URL & CDN public URL |
+| `DELETE` | `/api/v1/media?fileKeyOrUrl={fileKeyOrUrl}` | Delete media file from Cloudflare R2 |
+
 ## InteractiveProcessSubStep
 
 **Base Path:** `/api/interactive-process-substeps`

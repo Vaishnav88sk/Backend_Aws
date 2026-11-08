@@ -23,6 +23,7 @@ This document serves as the **Technical Implementation Guide** for both Frontend
 5. [Content Fetching Hierarchy](#5-content-fetching-hierarchy)
 6. [Learning Progress Execution](#6-learning-progress-execution)
 7. [Report Cards](#7-report-cards)
+8. [Media Storage & Cloudflare R2 Pipeline](#8-media-storage--cloudflare-r2-pipeline)
 
 ---
 
@@ -595,3 +596,23 @@ Parents can view the aggregated performance data of their children.
 ### 7B. Fetch Life Skills Mapping
 * **Endpoint:** `GET /api/v1/child/{childId}/lifeskills`
 * **Response:** Returns `showing` and `toDevelopFurther` skill lists based on life skill points earned from the parent quiz. Both lists are empty if the child has no skill points. See [2C](#2c-child-life-skills-dashboard).
+
+---
+
+## 8. Media Storage & Cloudflare R2 Pipeline
+
+For pictures, GIFs, and videos used across interactive processes, activities, and avatars, the application uses **Direct-to-Storage presigned URLs** with Cloudflare R2:
+
+1. **Request Presigned Upload URL:**
+   - **Endpoint:** `POST /api/v1/media/presigned-upload-url`
+   - **Payload:** `{"fileName": "lesson.mp4", "contentType": "video/mp4", "folder": "interactive-processes"}`
+   - **Response:** Returns temporary `uploadUrl` (valid 10 minutes) and permanent CDN `publicUrl`.
+2. **Direct Upload (Frontend -> R2):**
+   - Frontend performs `PUT` directly to `uploadUrl` with the file body and `Content-Type`.
+3. **Persist Public URL in Entity:**
+   - Frontend saves `publicUrl` into entity payload (e.g., `mediaUrl` in `/api/interactive-processes`).
+4. **Delete Media:**
+   - **Endpoint:** `DELETE /api/v1/media?fileKeyOrUrl=<fileKeyOrUrl>`
+
+*(For full setup, CORS rules, and code examples, see [MEDIA_STORAGE_AND_R2_FLOW.md](./MEDIA_STORAGE_AND_R2_FLOW.md))*
+

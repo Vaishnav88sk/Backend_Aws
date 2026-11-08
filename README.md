@@ -30,6 +30,7 @@ We have several documentation files to help you navigate, test, and deploy the s
 | **[LOGGING_GUIDE.md](./docs/LOGGING_GUIDE.md)** | Best practices and standards for application logging |
 | **[DATA_MODELS_AND_DTOS.md](./docs/DATA_MODELS_AND_DTOS.md)** | Technical specification for domain entities and DTOs (ParentUser & ChildUser) |
 | **[REFERRAL_SYSTEM.md](./docs/REFERRAL_SYSTEM.md)** | Technical documentation on referral codes, wallet rewards, and invite mechanics |
+| **[MEDIA_STORAGE_AND_R2_FLOW.md](./docs/MEDIA_STORAGE_AND_R2_FLOW.md)** | Technical specification for Cloudflare R2 direct media uploads and CDN streaming |
 | **[CI_CD_SETUP_GUIDE.md](./docs/CI_CD_SETUP_GUIDE.md)** | Detailed guide on configuring GitHub Actions and Docker Hub for automated EC2 deployments |
 
 ---
