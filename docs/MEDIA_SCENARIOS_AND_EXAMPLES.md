@@ -12,8 +12,9 @@ This document walks through practical, real-world scenarios illustrating how fro
 4. [Scene 4: Removing Custom Photo (Reverting to Preset Avatar)](#scene-4-removing-custom-photo-reverting-to-preset-avatar)
 5. [Scene 5: Admin Creating a Subject with an Icon](#scene-5-admin-creating-a-subject-with-an-icon)
 6. [Scene 6: Admin Uploading a 50MB Process Video](#scene-6-admin-uploading-a-50mb-process-video)
-7. [Frontend Display & Rendering Guide](#frontend-display--rendering-guide)
-8. [Summary Architecture Matrix](#summary-architecture-matrix)
+7. [Fetching, Edge Caching & Delivery Architecture](#7-fetching-edge-caching--delivery-architecture)
+8. [Frontend Rendering Guide for All Asset Types](#8-frontend-rendering-guide-for-all-asset-types)
+9. [Summary Architecture Matrix](#9-summary-architecture-matrix)
 
 ---
 
@@ -257,25 +258,191 @@ flowchart TD
 
 ---
 
-## Frontend Display & Rendering Guide
+## 7. Fetching, Edge Caching & Delivery Architecture
 
-Frontend clients (React, Angular, Flutter, Android, iOS) should implement avatar rendering using this uniform pattern:
+When a user opens any screen in the mobile or web app, **the Spring Boot server never touches or streams media bytes**.
 
-### React / Next.js Component
+```
+[ Step 1: Fetch Metadata JSON ]
+Frontend Client  ────────► GET /api/subjects ────────► Spring Boot API
+Frontend Client  ◄─────── Returns JSON with URLs ───── Spring Boot API
+                          (e.g., iconUrl: "https://media.yourdomain.com/subjects/uuid.svg")
+
+[ Step 2: Stream Media from Closest CDN Node ]
+Frontend Client  ────────► GET https://media.yourdomain.com/... ────────► Cloudflare Edge CDN
+Frontend Client  ◄─────── High-speed cached image/video bytes ───────── Cloudflare Edge CDN
+                          (0% Spring Boot server load | $0 Egress bandwidth)
+```
+
+### Key Principles:
+1. **Public vs. Protected Media:**
+   - Public assets (Subject icons, Activity covers/videos, Process step GIFs, Avatars) are served through Cloudflare's Custom Domain. No authorization headers are needed for GET requests, enabling browser-level and edge-level HTTP caching.
+   - Only writing/uploading requires JWT authentication.
+2. **Global Edge Caching:**
+   - Cloudflare caches files at edge locations closest to the user (under 20ms response time).
+   - If an asset is requested for the first time in a region (Cache Miss), Cloudflare fetches it once from the R2 bucket, caches it, and serves subsequent requests from cache (Cache Hit).
+3. **Zero Stale Cache:**
+   - Every uploaded file has a unique UUID filename (e.g., `media/2026/11/uuid.png`). If an admin or user replaces a file, a new URL is generated, so you never encounter stale cache issues.
+
+---
+
+## 8. Frontend Rendering Guide for All Asset Types
+
+### 8A. Subject Icons (`SubjectResponseDTO.iconUrl`)
+
+#### API Payload:
+```json
+{
+  "id": "334e17ae-b88f-49e4-8287-26073668dc22",
+  "name": "Astronomy",
+  "iconUrl": "https://media.yourdomain.com/subjects/2026/11/telescope.svg"
+}
+```
+
+#### React / Web:
 ```jsx
-export function UserAvatar({ pfp, size = 48 }) {
-  // 1. If pfp is a full URL, it is a custom uploaded photo from Cloudflare R2
+export function SubjectCard({ subject }) {
+  return (
+    <div className="subject-card">
+      <img
+        src={subject.iconUrl || '/assets/default_subject.png'}
+        alt={subject.name}
+        loading="lazy"
+        onError={(e) => {
+          e.currentTarget.src = '/assets/default_subject.png';
+        }}
+        className="w-12 h-12 object-contain"
+      />
+      <h3>{subject.name}</h3>
+    </div>
+  );
+}
+```
+
+#### Flutter / Mobile:
+```dart
+Widget buildSubjectIcon(String? iconUrl) {
+  return CachedNetworkImage(
+    imageUrl: iconUrl ?? '',
+    width: 48,
+    height: 48,
+    fit: BoxFit.contain,
+    placeholder: (context, url) => const SizedBox(
+      width: 48,
+      height: 48,
+      child: CircularProgressIndicator(strokeWidth: 2),
+    ),
+    errorWidget: (context, url, error) => Image.asset(
+      'assets/default_subject.png',
+      width: 48,
+      height: 48,
+    ),
+  );
+}
+```
+
+---
+
+### 8B. Activity Covers & Explainer Videos (`InteractiveActivity`)
+
+#### API Payload:
+```json
+{
+  "id": "activity-uuid",
+  "title": "Dental Hygiene Basics",
+  "coverImage": "https://media.yourdomain.com/activities/covers/teeth.jpg",
+  "referenceVideo": "https://media.yourdomain.com/activities/videos/brushing_intro.mp4"
+}
+```
+
+#### React / Web Video Player:
+```jsx
+export function ActivityMediaViewer({ coverImage, referenceVideo, title }) {
+  return (
+    <div className="activity-media-container rounded-2xl overflow-hidden shadow-lg">
+      <video
+        controls
+        poster={coverImage}
+        preload="metadata"
+        playsInline
+        className="w-full aspect-video rounded-2xl bg-black"
+      >
+        <source src={referenceVideo} type="video/mp4" />
+        Your device does not support playing this video.
+      </video>
+    </div>
+  );
+}
+```
+*Note:* `preload="metadata"` downloads only the duration and first frame metadata until the user taps play, saving bandwidth.
+
+---
+
+### 8C. Interactive Process Steps (Step Animations & GIFs)
+
+#### API Payload:
+```json
+{
+  "stepOrder": 1,
+  "senseiMessage": "Hold your toothbrush at a 45-degree angle.",
+  "mediaUrl": "https://media.yourdomain.com/interactive-processes/brush_45.gif"
+}
+```
+
+#### React / Web Component:
+```jsx
+export function ProcessStepVisual({ mediaUrl, message }) {
+  const isVideo = mediaUrl?.toLowerCase().endsWith(".mp4") || mediaUrl?.toLowerCase().endsWith(".webm");
+
+  return (
+    <div className="step-visual-card text-center">
+      {isVideo ? (
+        <video
+          src={mediaUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="rounded-xl mx-auto max-h-64"
+        />
+      ) : (
+        <img
+          src={mediaUrl}
+          alt="Step illustration"
+          loading="eager"
+          className="rounded-xl mx-auto max-h-64 object-contain"
+        />
+      )}
+      <p className="mt-4 text-lg font-medium">{message}</p>
+    </div>
+  );
+}
+```
+
+---
+
+### 8D. Child Profile Pictures (`ChildUser.pfp`)
+
+Handles both preset animal names (`"Panda"`, `"Fox"`) and custom uploaded Cloudflare R2 URLs seamlessly:
+
+#### React / Web Component:
+```jsx
+export function ChildAvatar({ pfp, size = 48 }) {
+  // 1. If pfp starts with "http", it is a custom uploaded photo from Cloudflare R2
   if (pfp && pfp.startsWith("http")) {
     return (
       <img
         src={pfp}
-        alt="User Profile"
+        alt="Child Profile"
         style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }}
+        onError={(e) => {
+          e.currentTarget.src = "/assets/avatars/Fox.png";
+        }}
       />
     );
   }
 
-  // 2. Otherwise, it is an animal preset name -> render from local assets
+  // 2. Otherwise, it is an animal preset name -> render from local app bundle
   const avatarName = pfp || "Fox";
   return (
     <img
@@ -287,13 +454,13 @@ export function UserAvatar({ pfp, size = 48 }) {
 }
 ```
 
-### Flutter / Mobile Widget
+#### Flutter / Mobile Widget:
 ```dart
-Widget buildAvatar(String? pfp, {double radius = 24.0}) {
+Widget buildChildAvatar(String? pfp, {double radius = 24.0}) {
   if (pfp != null && pfp.startsWith("http")) {
     return CircleAvatar(
       radius: radius,
-      backgroundImage: NetworkImage(pfp),
+      backgroundImage: CachedNetworkImageProvider(pfp),
     );
   }
 
@@ -307,7 +474,18 @@ Widget buildAvatar(String? pfp, {double radius = 24.0}) {
 
 ---
 
-## Summary Architecture Matrix
+### 8E. Performance & Rendering Best Practices
+
+| Practice | Implementation | Benefit |
+| :--- | :--- | :--- |
+| **Lazy Loading** | `loading="lazy"` on images | Images outside screen viewport are not downloaded until scrolled into view. |
+| **Disk Caching (Mobile)** | `CachedNetworkImage` (Flutter) / `FastImage` (React Native) | Assets stored on local device disk; zero repeat network calls when navigating tabs. |
+| **Video Preloading** | `preload="metadata"` | Only loads video duration/dimensions rather than the full 50MB file on screen load. |
+| **Graceful Fallbacks** | `onError` handler | If a user goes offline or a link is unreachable, displays default icon rather than broken image box. |
+
+---
+
+## 9. Summary Architecture Matrix
 
 | Scenario | `pfp` / `mediaUrl` Value | Stored in R2? | Storage / Bandwidth Cost | Frontend Rendering |
 | :--- | :--- | :--- | :--- | :--- |
@@ -316,4 +494,5 @@ Widget buildAvatar(String? pfp, {double radius = 24.0}) {
 | **Photo Removed**| `"Fox"` (Preset name) | No (Old deleted) | **$0** (Old storage freed) | Reverts immediately to local preset asset |
 | **Subject Icon** | `https://media.../subjects/uuid.svg`| Yes | Standard R2 storage | Global CDN cache with $0 egress |
 | **Process Video**| `https://media.../processes/uuid.mp4`| Yes | Standard R2 storage | Edge streaming with $0 egress |
+
 
