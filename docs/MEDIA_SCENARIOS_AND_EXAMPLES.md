@@ -119,6 +119,10 @@ Content-Type: application/json
 }
 ```
 
+> [!NOTE]
+> **Enterprise URL Normalization:** The client can send either the full CDN `publicUrl` or the relative `fileKey` (`"avatars/2026/11/9f8c1e2a-4d5e.png"`). The backend automatically persists the domain-agnostic relative key in the database and dynamically resolves it to the full CDN URL when queried.
+
+
 ---
 
 ## Scene 3: Replacing an Existing Custom Photo (Auto-Cleanup)

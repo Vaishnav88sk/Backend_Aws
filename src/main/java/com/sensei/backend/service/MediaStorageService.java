@@ -31,4 +31,29 @@ public interface MediaStorageService {
      *                     full CDN URL (e.g., {@code https://media.example.com/media/2026/11/uuid.png})
      */
     void deleteFile(String fileKeyOrUrl);
+
+    /**
+     * Converts a full public CDN URL (or relative key) into a normalized relative storage key
+     * for persistence in database entities.
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>{@code "https://media.domain.com/subjects/2026/11/abc.png"} &rarr; {@code "subjects/2026/11/abc.png"}</li>
+     *   <li>{@code "subjects/2026/11/abc.png"} &rarr; {@code "subjects/2026/11/abc.png"}</li>
+     *   <li>{@code "Fox"} (preset avatar) &rarr; {@code "Fox"}</li>
+     * </ul>
+     *
+     * @param fileKeyOrUrl the input URL, key, or preset identifier
+     * @return normalized relative storage key or preset identifier
+     */
+    String toStorageKey(String fileKeyOrUrl);
+
+    /**
+     * Converts a relative storage key into a fully-qualified public CDN URL for API responses.
+     * If the input is already a full URL or a preset avatar (e.g., "Fox"), it is returned as-is.
+     *
+     * @param fileKeyOrUrl relative storage key, full URL, or preset identifier
+     * @return fully-qualified public CDN URL or preset identifier
+     */
+    String toPublicUrl(String fileKeyOrUrl);
 }

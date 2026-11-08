@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,6 +73,23 @@ class ChildUserServiceTest {
         childUserDTO.setChildId(testChildId);
         childUserDTO.setChildName("Original Name");
         childUserDTO.setParentId(testParentId);
+
+        lenient().when(mediaStorageService.toStorageKey(any())).thenAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            if (arg == null) return null;
+            if (arg.startsWith("https://media.mysite.com/")) {
+                return arg.substring("https://media.mysite.com/".length());
+            }
+            return arg;
+        });
+        lenient().when(mediaStorageService.toPublicUrl(any())).thenAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            if (arg == null) return null;
+            if (arg.startsWith("http://") || arg.startsWith("https://") || !arg.contains("/")) {
+                return arg;
+            }
+            return "https://media.mysite.com/" + arg;
+        });
     }
 
     @Test
@@ -136,7 +154,7 @@ class ChildUserServiceTest {
         childUserService.update(testChildId, updateDTO);
 
         verify(mediaStorageService, times(1)).deleteFile("https://media.mysite.com/avatars/old.png");
-        assertEquals("https://media.mysite.com/avatars/new.png", childUser.getPfp());
+        assertEquals("avatars/new.png", childUser.getPfp());
     }
 
     @Test

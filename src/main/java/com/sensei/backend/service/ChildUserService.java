@@ -182,7 +182,7 @@ public class ChildUserService {
         child.setMedicalHistory(dto.getMedicalHistory());
         
         if (StringUtils.hasText(dto.getPfp())) {
-            child.setPfp(dto.getPfp().trim());
+            child.setPfp(mediaStorageService.toStorageKey(dto.getPfp().trim()));
         } else {
             child.setPfp(getDefaultAvatar());
         }
@@ -201,13 +201,13 @@ public class ChildUserService {
         }
 
         log.info("Created ChildUser with name: {}", dto.getChildName());
-        return childUserMapper.toDto(childUserRepository.save(child));
+        return toDto(childUserRepository.save(child));
     }
     // 🔹 All children of a parent
     public List<ChildUserDTO> getChildrenByParent(UUID parentId) {
     return childUserRepository.findByParentUser_ParentId(parentId)
             .stream()
-            .map(childUserMapper::toDto)
+            .map(this::toDto)
             .collect(Collectors.toList());
 }
 
@@ -215,13 +215,15 @@ public class ChildUserService {
 public ChildUserDTO getByChildId(UUID childId) {
     ChildUser child = childUserRepository.findByChildId(childId)
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
-    return childUserMapper.toDto(child);
+    return toDto(child);
 }
 @Transactional
 public ChildUserDTO createChildUser(ChildUserDTO dto) {
     ChildUser child = childUserMapper.toEntity(dto);
 
-    if (!StringUtils.hasText(child.getPfp())) {
+    if (StringUtils.hasText(child.getPfp())) {
+        child.setPfp(mediaStorageService.toStorageKey(child.getPfp().trim()));
+    } else {
         child.setPfp(getDefaultAvatar());
     }
 
@@ -231,7 +233,7 @@ public ChildUserDTO createChildUser(ChildUserDTO dto) {
     }
 
     child = childUserRepository.save(child);
-    return childUserMapper.toDto(child);
+    return toDto(child);
 }
 
 @Transactional
@@ -258,7 +260,7 @@ public ChildUserDTO update(UUID childId, ChildUserUpdateDTO dto) {
     }
 
     log.info("Updated ChildUser (partial) with ID: {}", childId);
-    return childUserMapper.toDto(childUserRepository.save(existing));
+    return toDto(childUserRepository.save(existing));
 }
 
 @Transactional
@@ -279,7 +281,7 @@ public ChildUserDTO update(UUID childId, ChildUserDTO dto) {
     }
 
     log.info("Updated ChildUser with ID: {}", childId);
-    return childUserMapper.toDto(childUserRepository.save(existing));
+    return toDto(childUserRepository.save(existing));
 }
 
 @Transactional
@@ -288,31 +290,32 @@ public ChildUserDTO resetPfp(UUID childId) {
             .orElseThrow(() -> new ResourceNotFoundException("Child not found"));
 
     String oldPfp = existing.getPfp();
-    if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http")) {
+    if (StringUtils.hasText(oldPfp) && !DEFAULT_AVATARS.contains(oldPfp)) {
         mediaStorageService.deleteFile(oldPfp);
     }
 
     existing.setPfp(getDefaultAvatar());
     log.info("Reset pfp to default avatar for ChildUser with ID: {}", childId);
-    return childUserMapper.toDto(childUserRepository.save(existing));
+    return toDto(childUserRepository.save(existing));
 }
 
 private void handlePfpTransition(ChildUser existing, String oldPfp, String newPfp) {
     String trimmedNew = newPfp.trim();
     // If user removed or cleared photo -> delete old R2 file (if any) and reset to default avatar
     if (trimmedNew.isEmpty()) {
-        if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http")) {
+        if (StringUtils.hasText(oldPfp) && !DEFAULT_AVATARS.contains(oldPfp)) {
             mediaStorageService.deleteFile(oldPfp);
         }
         existing.setPfp(getDefaultAvatar());
         return;
     }
 
+    String newKey = mediaStorageService.toStorageKey(trimmedNew);
     // If user uploaded a new custom photo and previous was a different custom R2 file -> delete old file
-    if (StringUtils.hasText(oldPfp) && oldPfp.startsWith("http") && !oldPfp.equals(trimmedNew)) {
+    if (StringUtils.hasText(oldPfp) && !DEFAULT_AVATARS.contains(oldPfp) && !oldPfp.equals(newKey)) {
         mediaStorageService.deleteFile(oldPfp);
     }
-    existing.setPfp(trimmedNew);
+    existing.setPfp(newKey);
 }
 
 @Transactional
@@ -345,13 +348,24 @@ public void delete(UUID childId) {
 public List<ChildUserDTO> findByPhone(String phone) {
     return childUserRepository.findByPhoneNumber(phone)
             .stream()
-            .map(childUserMapper::toDto)
+            .map(this::toDto)
             .collect(Collectors.toList());
 }
 
 public org.springframework.data.domain.Page<ChildUserDTO> getAllChildren(org.springframework.data.domain.Pageable pageable) {
     return childUserRepository.findAll(pageable)
-            .map(childUserMapper::toDto);
+            .map(this::toDto);
+}
+
+private ChildUserDTO toDto(ChildUser child) {
+    if (child == null) {
+        return null;
+    }
+    ChildUserDTO dto = childUserMapper.toDto(child);
+    if (dto != null) {
+        dto.setPfp(mediaStorageService.toPublicUrl(dto.getPfp()));
+    }
+    return dto;
 }
 
 

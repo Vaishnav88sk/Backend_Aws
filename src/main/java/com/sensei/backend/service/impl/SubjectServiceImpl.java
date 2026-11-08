@@ -87,6 +87,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import com.sensei.backend.service.MediaStorageService;
+import org.springframework.util.StringUtils;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -101,6 +104,7 @@ public class SubjectServiceImpl implements SubjectService {
     private final PricingPlanSubjectRepository pricingPlanSubjectRepository;
     private final ChildSubjectProgressRepository childSubjectProgressRepository;
     private final ModuleRepository moduleRepository;
+    private final MediaStorageService mediaStorageService;
 
     @Value("${app.freemium.subject-id:}")
     private String freemiumSubjectId;
@@ -111,7 +115,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = Subject.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .iconUrl(dto.getIconUrl())
+                .iconUrl(mediaStorageService.toStorageKey(dto.getIconUrl()))
                 .isActive(true)
                 .build();
 
@@ -218,7 +222,13 @@ public class SubjectServiceImpl implements SubjectService {
 
         subject.setName(dto.getName());
         subject.setDescription(dto.getDescription());
-        subject.setIconUrl(dto.getIconUrl());
+
+        String newKey = mediaStorageService.toStorageKey(dto.getIconUrl());
+        String oldKey = subject.getIconUrl();
+        if (StringUtils.hasText(oldKey) && !oldKey.equals(newKey)) {
+            mediaStorageService.deleteFile(oldKey);
+        }
+        subject.setIconUrl(newKey);
 
         return mapToResponse(subjectRepository.save(subject));
     }
@@ -237,7 +247,7 @@ public class SubjectServiceImpl implements SubjectService {
                 .id(s.getId())
                 .name(s.getName())
                 .description(s.getDescription())
-                .iconUrl(s.getIconUrl())
+                .iconUrl(mediaStorageService.toPublicUrl(s.getIconUrl()))
                 .isActive(s.getIsActive())
                 .createdAt(s.getCreatedAt())
                 .build();

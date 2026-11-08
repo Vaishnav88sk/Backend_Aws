@@ -7,9 +7,11 @@ import com.sensei.backend.entity.InteractiveProcess;
 import com.sensei.backend.repository.InteractiveActivityRepository;
 import com.sensei.backend.repository.InteractiveProcessRepository;
 import com.sensei.backend.service.InteractiveProcessService;
+import com.sensei.backend.service.MediaStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class InteractiveProcessServiceImpl implements InteractiveProcessService 
     private final InteractiveProcessRepository processRepository;
     private final InteractiveActivityRepository activityRepository;
     private final jakarta.persistence.EntityManager entityManager;
+    private final MediaStorageService mediaStorageService;
 
     // -------------------------
     // CREATE
@@ -40,7 +43,7 @@ public class InteractiveProcessServiceImpl implements InteractiveProcessService 
                 .senseiMessage(dto.getSenseiMessage())
                 .hint(dto.getHint())
                 .childTask(dto.getChildTask())
-                .mediaUrl(dto.getMediaUrl())
+                .mediaUrl(mediaStorageService.toStorageKey(dto.getMediaUrl()))
                 .build();
 
         return map(processRepository.save(process));
@@ -82,7 +85,12 @@ public class InteractiveProcessServiceImpl implements InteractiveProcessService 
         process.setSenseiMessage(dto.getSenseiMessage());
         process.setHint(dto.getHint());
         process.setChildTask(dto.getChildTask());
-        process.setMediaUrl(dto.getMediaUrl());
+
+        String newMedia = mediaStorageService.toStorageKey(dto.getMediaUrl());
+        if (StringUtils.hasText(process.getMediaUrl()) && !process.getMediaUrl().equals(newMedia)) {
+            mediaStorageService.deleteFile(process.getMediaUrl());
+        }
+        process.setMediaUrl(newMedia);
 
         return map(processRepository.save(process));
     }
@@ -116,7 +124,7 @@ public class InteractiveProcessServiceImpl implements InteractiveProcessService 
         dto.setSenseiMessage(process.getSenseiMessage());
         dto.setHint(process.getHint());
         dto.setChildTask(process.getChildTask());
-        dto.setMediaUrl(process.getMediaUrl());
+        dto.setMediaUrl(mediaStorageService.toPublicUrl(process.getMediaUrl()));
         dto.setCreatedAt(process.getCreatedAt());
         dto.setUpdatedAt(process.getUpdatedAt());
         return dto;

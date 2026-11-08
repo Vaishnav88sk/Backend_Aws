@@ -97,4 +97,33 @@ class CloudflareR2StorageServiceImplTest {
 
         verify(s3Client, times(1)).deleteObject(any(DeleteObjectRequest.class));
     }
+
+    @Test
+    void deleteFile_withPresetAvatar_doesNotCallS3Client() {
+        mediaStorageService.deleteFile("Fox");
+
+        verify(s3Client, never()).deleteObject(any(DeleteObjectRequest.class));
+    }
+
+    @Test
+    void toStorageKey_normalizesFullUrlAndPreservesKeyAndPreset() {
+        assertEquals("subjects/2026/11/math.png", 
+                mediaStorageService.toStorageKey("https://media.mysite.com/subjects/2026/11/math.png"));
+        assertEquals("avatars/2026/11/child.jpg", 
+                mediaStorageService.toStorageKey("avatars/2026/11/child.jpg"));
+        assertEquals("Fox", 
+                mediaStorageService.toStorageKey("Fox"));
+        assertNull(mediaStorageService.toStorageKey(null));
+    }
+
+    @Test
+    void toPublicUrl_prependsDomainForKeysAndPreservesFullUrlsAndPresets() {
+        assertEquals("https://media.mysite.com/subjects/2026/11/math.png",
+                mediaStorageService.toPublicUrl("subjects/2026/11/math.png"));
+        assertEquals("https://media.mysite.com/avatars/child.jpg",
+                mediaStorageService.toPublicUrl("https://media.mysite.com/avatars/child.jpg"));
+        assertEquals("Blue Bird",
+                mediaStorageService.toPublicUrl("Blue Bird"));
+        assertNull(mediaStorageService.toPublicUrl(null));
+    }
 }

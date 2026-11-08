@@ -7,9 +7,11 @@ import com.sensei.backend.entity.SubModule;
 import com.sensei.backend.repository.InteractiveActivityRepository;
 import com.sensei.backend.repository.SubModuleRepository;
 import com.sensei.backend.service.InteractiveActivityService;
+import com.sensei.backend.service.MediaStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class InteractiveActivityServiceImpl implements InteractiveActivityServic
     private final InteractiveActivityRepository repository;
     private final SubModuleRepository subModuleRepository;
     private final com.sensei.backend.repository.ChildInteractiveActivityProgressRepository activityProgressRepo;
+    private final MediaStorageService mediaStorageService;
 
     private InteractiveActivityResponseDTO map(InteractiveActivity a) {
         InteractiveActivityResponseDTO dto = new InteractiveActivityResponseDTO();
@@ -31,8 +34,8 @@ public class InteractiveActivityServiceImpl implements InteractiveActivityServic
         dto.setTitle(a.getTitle());
         dto.setLearningOutcome(a.getLearningOutcome());
         dto.setKeyObjectives(a.getKeyObjectives());
-        dto.setReferenceVideo(a.getReferenceVideo());
-        dto.setCoverImage(a.getCoverImage());
+        dto.setReferenceVideo(mediaStorageService.toPublicUrl(a.getReferenceVideo()));
+        dto.setCoverImage(mediaStorageService.toPublicUrl(a.getCoverImage()));
         dto.setObjective(a.getObjective());
         dto.setActivityType(a.getActivityType());
         dto.setOrderIndex(a.getOrderIndex());
@@ -52,8 +55,8 @@ public class InteractiveActivityServiceImpl implements InteractiveActivityServic
                 .title(dto.getTitle())
                 .learningOutcome(dto.getLearningOutcome())
                 .keyObjectives(dto.getKeyObjectives())
-                .referenceVideo(dto.getReferenceVideo())
-                .coverImage(dto.getCoverImage())
+                .referenceVideo(mediaStorageService.toStorageKey(dto.getReferenceVideo()))
+                .coverImage(mediaStorageService.toStorageKey(dto.getCoverImage()))
                 .objective(dto.getObjective())
                 .activityType(dto.getActivityType())
                 .orderIndex(dto.getOrderIndex())
@@ -93,8 +96,19 @@ public class InteractiveActivityServiceImpl implements InteractiveActivityServic
         a.setTitle(dto.getTitle());
         a.setLearningOutcome(dto.getLearningOutcome());
         a.setKeyObjectives(dto.getKeyObjectives());
-        a.setReferenceVideo(dto.getReferenceVideo());
-        a.setCoverImage(dto.getCoverImage());
+
+        String newRefVideo = mediaStorageService.toStorageKey(dto.getReferenceVideo());
+        if (StringUtils.hasText(a.getReferenceVideo()) && !a.getReferenceVideo().equals(newRefVideo)) {
+            mediaStorageService.deleteFile(a.getReferenceVideo());
+        }
+        a.setReferenceVideo(newRefVideo);
+
+        String newCover = mediaStorageService.toStorageKey(dto.getCoverImage());
+        if (StringUtils.hasText(a.getCoverImage()) && !a.getCoverImage().equals(newCover)) {
+            mediaStorageService.deleteFile(a.getCoverImage());
+        }
+        a.setCoverImage(newCover);
+
         a.setObjective(dto.getObjective());
         a.setActivityType(dto.getActivityType());
         a.setOrderIndex(dto.getOrderIndex());

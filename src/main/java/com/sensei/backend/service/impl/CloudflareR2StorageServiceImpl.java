@@ -117,7 +117,13 @@ public class CloudflareR2StorageServiceImpl implements MediaStorageService {
             return;
         }
 
-        String fileKey = extractFileKey(fileKeyOrUrl);
+        String trimmed = fileKeyOrUrl.trim();
+        // If it's a preset avatar (e.g. "Fox", "Blue Bird") without slash or scheme, skip object storage call
+        if (!trimmed.contains("/") && !trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+            return;
+        }
+
+        String fileKey = toStorageKey(trimmed);
         try {
             DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)
@@ -129,6 +135,52 @@ public class CloudflareR2StorageServiceImpl implements MediaStorageService {
         } catch (Exception e) {
             log.error("Failed to delete media file from R2: {}", fileKey, e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toStorageKey(String fileKeyOrUrl) {
+        if (!StringUtils.hasText(fileKeyOrUrl)) {
+            return fileKeyOrUrl;
+        }
+        String trimmed = fileKeyOrUrl.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            if (StringUtils.hasText(publicDomain) && trimmed.startsWith(publicDomain)) {
+                String sub = trimmed.substring(publicDomain.length());
+                return sub.startsWith("/") ? sub.substring(1) : sub;
+            }
+            try {
+                java.net.URI uri = java.net.URI.create(trimmed);
+                String path = uri.getPath();
+                if (StringUtils.hasText(path)) {
+                    return path.startsWith("/") ? path.substring(1) : path;
+                }
+            } catch (Exception ignored) {
+                // Return trimmed if URI parsing fails
+            }
+        }
+        return trimmed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toPublicUrl(String fileKeyOrUrl) {
+        if (!StringUtils.hasText(fileKeyOrUrl)) {
+            return fileKeyOrUrl;
+        }
+        String trimmed = fileKeyOrUrl.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            return trimmed;
+        }
+        // If it doesn't contain a slash, it's a preset avatar (e.g. "Fox", "Blue Bird")
+        if (!trimmed.contains("/")) {
+            return trimmed;
+        }
+        return buildPublicUrl(trimmed);
     }
 
     /**
@@ -158,19 +210,5 @@ public class CloudflareR2StorageServiceImpl implements MediaStorageService {
             return domain + "/" + fileKey;
         }
         return fileKey;
-    }
-
-    /**
-     * Extracts the relative S3 key from a full public CDN URL if needed.
-     *
-     * @param fileKeyOrUrl relative key or full CDN URL
-     * @return the relative object key
-     */
-    private String extractFileKey(String fileKeyOrUrl) {
-        if (StringUtils.hasText(publicDomain) && fileKeyOrUrl.startsWith(publicDomain)) {
-            String sub = fileKeyOrUrl.substring(publicDomain.length());
-            return sub.startsWith("/") ? sub.substring(1) : sub;
-        }
-        return fileKeyOrUrl;
     }
 }

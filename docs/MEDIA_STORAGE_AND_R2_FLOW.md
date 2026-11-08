@@ -21,13 +21,14 @@ flowchart TD
         User["User selects media (Image, GIF, Video)"]
         FE_Req["1. Request Presigned URL<br/>(fileName, contentType, folder)"]
         FE_Upload["3. Direct HTTP PUT<br/>(Uploads binary directly to R2)"]
-        FE_Save["4. Save Entity<br/>(Stores publicUrl in media_url)"]
-        FE_View["5. Fetch & Display Media<br/>(Streams from CDN)"]
+        FE_Save["4. Save Entity<br/>(Passes fileKey or publicUrl)"]
+        FE_View["5. Fetch & Display Media<br/>(Streams from Edge CDN)"]
     end
 
     subgraph Backend ["Spring Boot API"]
         BE_Sign["2. Validate MIME & Sign Temporary PUT URL<br/>(AWS S3 SDK for Cloudflare R2)"]
-        BE_DB[("MySQL / RDS Database<br/>(Stores public CDN URL)")]
+        BE_Norm["Normalize & Resolve Keys<br/>(toStorageKey / toPublicUrl)"]
+        BE_DB[("MySQL / RDS Database<br/>(Stores domain-agnostic relative key)")]
     end
 
     subgraph Cloudflare ["Cloudflare Edge & Storage"]
@@ -37,10 +38,13 @@ flowchart TD
 
     User --> FE_Req
     FE_Req -->|"POST /api/v1/media/presigned-upload-url"| BE_Sign
-    BE_Sign -->|"Returns uploadUrl + publicUrl"| FE_Upload
+    BE_Sign -->|"Returns uploadUrl, publicUrl, fileKey"| FE_Upload
     FE_Upload -->|"HTTP PUT uploadUrl"| R2
     FE_Upload -->|"Upload complete (200 OK)"| FE_Save
-    FE_Save -->|"POST /api/interactive-processes"| BE_DB
+    FE_Save -->|"POST /api/interactive-processes"| BE_Norm
+    BE_Norm -->|"Persists relative key (e.g. subjects/...)"| BE_DB
+    BE_DB -->|"Dynamically prepends CDN domain"| BE_Norm
+    BE_Norm -->|"Returns fully-qualified CDN URL"| FE_View
     FE_View <-->|"Fast Edge Cached Delivery"| CDN
     CDN <--> R2
 
@@ -279,5 +283,22 @@ function ChildAvatar({ pfp }) {
   return <img src={`/assets/avatars/${avatarName}.png`} alt={avatarName} className="avatar" />;
 }
 ```
+
+---
+
+## 7. Enterprise URL Storage Strategy (Domain-Agnostic Database)
+
+To adhere strictly to production enterprise standards, the backend separates internal storage keys from public CDN URLs:
+
+| Layer | Value Format | Example |
+| :--- | :--- | :--- |
+| **Cloudflare R2 Bucket** | Relative S3 Object Key | `subjects/2026/11/9b1deb4d.png` |
+| **MySQL / RDS Database** | Relative Storage Key | `subjects/2026/11/9b1deb4d.png` (or preset `"Fox"`) |
+| **REST API Responses** | Fully-Qualified CDN URL | `https://media.yourdomain.com/subjects/2026/11/9b1deb4d.png` |
+
+### Why this is the Enterprise Standard:
+1. **Zero-Migration Domain Changes:** If you ever switch CDN domains (e.g., from `media.yourdomain.com` to `cdn.yourdomain.com`), you only update `CLOUDFLARE_R2_PUBLIC_DOMAIN` in `.env`. **Zero database rows need to be touched.**
+2. **Transparent Frontend Experience:** The frontend can submit either `fileKey` or `publicUrl` during `POST`/`PUT`/`PATCH` operations. The backend normalizes them to the relative storage key automatically. When fetching entities, the backend dynamically resolves relative keys to fully-qualified CDN links ready for rendering.
+
 
 
