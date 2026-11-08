@@ -156,7 +156,7 @@ public class ChildUserService {
     private final jakarta.persistence.EntityManager entityManager;
 
     public static final List<String> DEFAULT_AVATARS = List.of(
-            "avatar_1", "avatar_2", "avatar_3", "avatar_4", "avatar_5", "avatar_6"
+            "Blue Bird", "Fox", "Panda", "Pink Kitten", "Puppy", "Turtle"
     );
 
     public static String getDefaultAvatar() {

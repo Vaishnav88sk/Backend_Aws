@@ -253,16 +253,18 @@ Future<String> uploadMediaToR2(File file, String contentType, String folder) asy
 The application supports both **preset default avatar strings** and **custom Cloudflare R2 photos** for child users via the `pfp` field.
 
 ### Behavior Summary:
-1. **New User Login / Registration:**
-   - When a parent signs up or logs in via Google, an associated child is created and automatically assigned a default avatar string (`"avatar_1"` to `"avatar_6"`).
-   - If a child is created without providing a `pfp`, the backend auto-assigns a random default avatar string.
-2. **Uploading a Custom Photo:**
+1. **Preset Default Avatars:**
+   - The 6 supported preset avatar names are: **`Blue Bird`**, **`Fox`**, **`Panda`**, **`Pink Kitten`**, **`Puppy`**, and **`Turtle`**.
+2. **New User Login / Registration:**
+   - When a parent signs up or logs in via Google, an associated child is created and automatically assigned one of the 6 default avatars at random.
+   - If a child is created without providing a `pfp`, the backend auto-assigns a random preset avatar.
+3. **Uploading a Custom Photo:**
    - The frontend requests a presigned URL with `folder: "avatars"` and uploads directly to R2.
    - The frontend calls `PATCH /api/children/{childId}` with `{ "pfp": "https://media.yourdomain.com/avatars/..." }`.
    - The backend automatically deletes the **old custom photo** from Cloudflare R2 to prevent storage bloat.
-3. **Removing Custom Photo / Reverting to Default:**
+4. **Removing Custom Photo / Reverting to Default:**
    - Call `DELETE /api/children/{childId}/pfp` or send `{ "pfp": "" }`.
-   - The backend deletes the custom photo from Cloudflare R2 and reverts `pfp` back to a default avatar string (e.g. `"avatar_1"`).
+   - The backend deletes the custom photo from Cloudflare R2 and reverts `pfp` back to a random default avatar (e.g. `"Fox"`).
 
 ### Frontend Rendering Logic:
 ```jsx
@@ -272,9 +274,9 @@ function ChildAvatar({ pfp }) {
     return <img src={pfp} alt="Child Profile" className="avatar" />;
   }
 
-  // Otherwise, it is an auto-assigned preset string -> render from local app assets
-  const avatarKey = pfp || "avatar_1";
-  return <img src={`/assets/avatars/${avatarKey}.png`} alt="Default Avatar" className="avatar" />;
+  // Otherwise, it is one of the 6 preset names (e.g., "Fox", "Blue Bird") -> render from local app assets
+  const avatarName = pfp || "Fox";
+  return <img src={`/assets/avatars/${avatarName}.png`} alt={avatarName} className="avatar" />;
 }
 ```
 
