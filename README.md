@@ -31,6 +31,7 @@ We have several documentation files to help you navigate, test, and deploy the s
 | **[DATA_MODELS_AND_DTOS.md](./docs/DATA_MODELS_AND_DTOS.md)** | Technical specification for domain entities and DTOs (ParentUser & ChildUser) |
 | **[REFERRAL_SYSTEM.md](./docs/REFERRAL_SYSTEM.md)** | Technical documentation on referral codes, wallet rewards, and invite mechanics |
 | **[MEDIA_STORAGE_AND_R2_FLOW.md](./docs/MEDIA_STORAGE_AND_R2_FLOW.md)** | Technical specification for Cloudflare R2 direct media uploads and CDN streaming |
+| **[MEDIA_SCENARIOS_AND_EXAMPLES.md](./docs/MEDIA_SCENARIOS_AND_EXAMPLES.md)** | Practical end-to-end integration scenarios, avatar lifecycle, and code examples |
 | **[CI_CD_SETUP_GUIDE.md](./docs/CI_CD_SETUP_GUIDE.md)** | Detailed guide on configuring GitHub Actions and Docker Hub for automated EC2 deployments |
 
 ---
