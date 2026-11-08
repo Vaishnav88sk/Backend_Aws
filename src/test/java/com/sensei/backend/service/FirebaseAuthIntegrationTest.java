@@ -182,21 +182,4 @@ class FirebaseAuthIntegrationTest {
         java.util.Optional<UserRecord> afterDelete = firebaseAuthService.getUserByEmail(testEmail);
         assertTrue(afterDelete.isEmpty(), "getUserByEmail should return empty after deletion");
     }
-
-    @Test
-    void listFirebaseUsers() throws FirebaseAuthException {
-        assumeFirebaseConfigured();
-
-        com.google.firebase.auth.ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
-        System.out.println("=================================================");
-        System.out.println(">>> FIREBASE USERS CURRENTLY IN PROJECT sensei-97eef:");
-        int count = 0;
-        for (com.google.firebase.auth.ExportedUserRecord u : page.getValues()) {
-            System.out.println(" - Email: " + u.getEmail() + " | UID: " + u.getUid() + " | Name: " + u.getDisplayName());
-            count++;
-            if (count >= 10) break;
-        }
-        System.out.println(">>> Total displayed: " + count);
-        System.out.println("=================================================");
-    }
 }
